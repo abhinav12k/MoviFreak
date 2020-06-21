@@ -1,0 +1,82 @@
+package com.apps.movifreak.Adapter;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.apps.movifreak.Model.Movie;
+import com.apps.movifreak.R;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
+/**
+ * Created by abhinav on 21/6/20.
+ */
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
+
+    private ArrayList<Movie> movieList;
+    private Context mContext;
+
+    public MovieAdapter(ArrayList<Movie> mList){
+        this.movieList = mList;
+    }
+
+
+    @NonNull
+    @Override
+    public MovieAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View listItem = layoutInflater.inflate(R.layout.single_movie_tile,parent,false);
+        MovieAdapter.ViewHolder viewHolder = new MovieAdapter.ViewHolder(listItem);
+        mContext = parent.getContext();
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull final MovieAdapter.ViewHolder holder, int position) {
+
+        final String tileUrl = movieList.get(position).getPoster_path();
+
+        Picasso.with(mContext).load(tileUrl).networkPolicy(NetworkPolicy.OFFLINE).into(holder.movie_tile, new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError() {
+                //Try again online if cache failed
+                Picasso.with(mContext)
+                        .load(tileUrl)
+                        .into(holder.movie_tile);
+            }
+        });
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return movieList.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder{
+
+        public ImageView movie_tile;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            movie_tile = itemView.findViewById(R.id.movie_thumbnail);
+
+        }
+    }
+
+}
