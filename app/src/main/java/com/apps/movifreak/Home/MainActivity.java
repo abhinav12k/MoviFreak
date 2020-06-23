@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         //setting up toolbar
         Toolbar main_toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(main_toolbar);
+        main_toolbar.setTitleTextColor(getResources().getColor(R.color.colorRed));
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Pop Movies");

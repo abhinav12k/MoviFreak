@@ -2,10 +2,12 @@ package com.apps.movifreak.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +25,8 @@ import java.util.ArrayList;
  * Created by abhinav on 21/6/20.
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
+
+    private static final String TAG = MovieAdapter.class.getSimpleName();
 
     private ArrayList<Movie> movieList;
     private Context mContext;
@@ -54,7 +58,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         Picasso.with(mContext).load(tileUrl).networkPolicy(NetworkPolicy.OFFLINE).into(holder.movie_tile, new Callback() {
             @Override
             public void onSuccess() {
-
+                holder.mProgressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -62,7 +66,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 //Try again online if cache failed
                 Picasso.with(mContext)
                         .load(tileUrl)
-                        .into(holder.movie_tile);
+                        .into(holder.movie_tile, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                holder.mProgressBar.setVisibility(View.INVISIBLE);
+                            }
+
+                            @Override
+                            public void onError() {
+                                Log.d(TAG,"Error in loading images");
+                            }
+                        });
             }
         });
 
@@ -88,11 +102,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         public ImageView movie_tile;
+        public ProgressBar mProgressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             movie_tile = itemView.findViewById(R.id.movie_thumbnail);
+            mProgressBar = itemView.findViewById(R.id.progress_bar);
 
         }
     }

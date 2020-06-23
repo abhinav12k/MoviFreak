@@ -4,13 +4,8 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <!--status bar and navigation bar colors-->
-        <item name="android:statusBarColor">@color/colorBackground</item>
-        <item name="android:windowLightStatusBar">true</item>
-
-        <item name="android:navigationBarColor">@color/colorBackground</item>
     </style>
 </resources>

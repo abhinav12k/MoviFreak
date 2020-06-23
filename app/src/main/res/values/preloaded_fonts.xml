@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/aclonica</item>
+        <item>@font/amarante</item>
+        <item>@font/berkshire_swash</item>
+        <item>@font/capriola</item>
+        <item>@font/lemonada</item>
+        <item>@font/lemonada_light</item>
+        <item>@font/lemonada_semibold</item>
+        <item>@font/nunito_sans</item>
         <item>@font/nunito_sans_bold</item>
+        <item>@font/poppins_bold</item>
     </array>
 </resources>

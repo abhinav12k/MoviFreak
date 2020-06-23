@@ -7,8 +7,14 @@
         android:id="@+id/movie_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_launcher_background"
         android:scaleType="fitCenter"
         android:padding="2dp"/>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateTint="@color/colorBackground"/>
 
 </RelativeLayout>
