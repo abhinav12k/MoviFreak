@@ -1,6 +1,7 @@
 package com.apps.movifreak.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.apps.movifreak.Home.DetailActivity;
 import com.apps.movifreak.Model.Movie;
 import com.apps.movifreak.R;
 import com.squareup.picasso.Callback;
@@ -29,6 +31,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         this.movieList = mList;
     }
 
+    public void updateDataSet(ArrayList<Movie> newMoviesList){
+        movieList= newMoviesList;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
@@ -41,7 +47,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MovieAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MovieAdapter.ViewHolder holder, final int position) {
 
         final String tileUrl = movieList.get(position).getPoster_path();
 
@@ -57,6 +63,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 Picasso.with(mContext)
                         .load(tileUrl)
                         .into(holder.movie_tile);
+            }
+        });
+
+        holder.movie_tile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Movie currentMovie = movieList.get(position);
+                Intent DetailIntent = new Intent(mContext, DetailActivity.class);
+                DetailIntent.putExtra("movie_details",currentMovie);
+                mContext.startActivity(DetailIntent);
+
             }
         });
 

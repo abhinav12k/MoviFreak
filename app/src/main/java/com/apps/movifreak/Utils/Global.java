@@ -6,7 +6,7 @@ import com.squareup.picasso.Picasso;
 
 public class Global extends Application {
 
-    //This class is for making picasso able to load image from memory
+    //This class is for making picasso able to load image from memory(using cache)
     @Override
     public void onCreate() {
         super.onCreate();
@@ -15,7 +15,7 @@ public class Global extends Application {
         builder.downloader(new OkHttp3Downloader(this,Integer.MAX_VALUE));
         Picasso built = builder.build();
 //        built.setIndicatorsEnabled(true);
-        built.setLoggingEnabled(true);
+//        built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
 
     }

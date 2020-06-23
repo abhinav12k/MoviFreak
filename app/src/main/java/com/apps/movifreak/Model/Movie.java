@@ -46,6 +46,26 @@ public class Movie implements Serializable {
         this.genre_ids = genre_ids;
     }
 
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "title='" + title + '\'' +
+                ", overview='" + overview + '\'' +
+                ", vote_average=" + vote_average +
+                ", release_date='" + release_date + '\'' +
+                ", adult=" + adult +
+                ", id=" + id +
+                ", poster_path='" + poster_path + '\'' +
+                ", vote_count=" + vote_count +
+                ", popularity=" + popularity +
+                ", video=" + video +
+                ", genre_ids=" + genre_ids +
+                ", backdrop_path='" + backdrop_path + '\'' +
+                ", original_language='" + original_language + '\'' +
+                ", original_title='" + original_title + '\'' +
+                '}';
+    }
+
     public String getBackdrop_path() {
         return backdrop_path;
     }

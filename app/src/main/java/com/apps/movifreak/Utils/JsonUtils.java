@@ -2,7 +2,6 @@ package com.apps.movifreak.Utils;
 
 import android.util.Log;
 
-import com.apps.movifreak.MainActivity;
 import com.apps.movifreak.Model.Movie;
 
 import org.json.JSONArray;
