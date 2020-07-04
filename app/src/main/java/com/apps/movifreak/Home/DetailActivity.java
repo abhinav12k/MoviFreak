@@ -3,6 +3,9 @@ package com.apps.movifreak.Home;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -10,8 +13,11 @@ import android.os.Bundle;
 import android.text.Layout;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.apps.movifreak.Adapter.ReviewAdapter;
+import com.apps.movifreak.Adapter.TrailerAdapter;
 import com.apps.movifreak.Model.Movie;
 import com.apps.movifreak.Model.Review;
 import com.apps.movifreak.Model.Trailer;
@@ -30,6 +36,10 @@ public class DetailActivity extends AppCompatActivity {
     private TextView movie_language;
     private TextView movie_rating;
     private TextView movie_synopsis;
+    private TextView trailerHeading;
+    private TextView reviewHeading;
+    private RecyclerView trailerRecyclerView;
+    private RecyclerView reviewsRecyclerView;
 
     private ArrayList<Trailer> trailerArrayList;
     private ArrayList<Review> reviewArrayList;
@@ -49,6 +59,10 @@ public class DetailActivity extends AppCompatActivity {
         movie_releaseDate = (TextView) findViewById(R.id.movie_releaseDate);
         movie_rating = (TextView) findViewById(R.id.movie_rating);
         movie_language = (TextView) findViewById(R.id.movie_language);
+        trailerHeading = (TextView) findViewById(R.id.trailerHeading);
+        reviewHeading = (TextView) findViewById(R.id.reviewHeading);
+        trailerRecyclerView = (RecyclerView) findViewById(R.id.trailerList);
+        reviewsRecyclerView = (RecyclerView) findViewById(R.id.reviewsList);
 
         //Movie Details
         String title = clickedMovie.getTitle();
@@ -87,6 +101,30 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    private void setupReviewsList() {
+        //setting up reviews list
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DetailActivity.this,RecyclerView.VERTICAL,false);
+        reviewsRecyclerView.setLayoutManager(linearLayoutManager);
+        reviewsRecyclerView.setHasFixedSize(true);
+
+        //setting up adapter
+        ReviewAdapter reviewAdapter = new ReviewAdapter(DetailActivity.this,reviewArrayList);
+        reviewsRecyclerView.setAdapter(reviewAdapter);
+    }
+
+    private void setupTrailerList() {
+        //setting up trailer's list
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DetailActivity.this,RecyclerView.HORIZONTAL,false);
+        trailerRecyclerView.setLayoutManager(linearLayoutManager);
+        trailerRecyclerView.setHasFixedSize(true);
+
+        //setting up adapter
+        TrailerAdapter adapter = new TrailerAdapter(DetailActivity.this,trailerArrayList);
+        trailerRecyclerView.setAdapter(adapter);
+
+    }
+
     private void getTrailer_and_reviews(long id) {
 
         new getTrailersTask().execute(NetworkUtils.buildUrlForDetailActivity(id,"videos",getString(R.string.api_key)));
@@ -116,6 +154,9 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Trailer> trailers) {
             trailerArrayList = trailers;
+            if(!trailerArrayList.isEmpty()&&trailerArrayList.size()!=0)
+                trailerHeading.setVisibility(View.VISIBLE);
+            setupTrailerList();
         }
     }
 
@@ -143,6 +184,9 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Review> reviews) {
             reviewArrayList = reviews;
+            if(reviewArrayList.size()!=0&&!reviewArrayList.isEmpty())
+                reviewHeading.setVisibility(View.VISIBLE);
+            setupReviewsList();
         }
     }
 

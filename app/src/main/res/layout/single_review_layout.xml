@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/author_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Author"
+        android:textColor="@color/colorRed"
+        android:fontFamily="@font/nunito_sans_bold"
+        android:textSize="20dp"
+        android:layout_margin="8dp"/>
+
+    <TextView
+        android:id="@+id/review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="review text appears here"
+        android:textSize="18dp"
+        android:textStyle="italic"
+        android:textColor="@color/colorBackground"
+        android:fontFamily="@font/nunito_sans"
+        android:layout_below="@id/author_name"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLight"
+        android:layout_below="@id/review"
+        android:layout_margin="10dp"/>
+
+</RelativeLayout>

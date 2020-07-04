@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".Home.DetailActivity"
     android:background="@color/colorText">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Home.DetailActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/main_toolbar"
@@ -42,6 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Language :"
+                    android:fontFamily="@font/nunito_sans_bold"
                     android:textColor="@color/colorLight"
                     android:textSize="18dp"
                     android:textStyle="bold" />
@@ -52,6 +56,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:text="en"
+                    android:fontFamily="@font/nunito_sans"
                     android:textColor="@color/colorLightGrey"
                     android:textSize="18dp" />
 
@@ -67,6 +72,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Release Date :"
+                    android:fontFamily="@font/nunito_sans_bold"
                     android:textColor="@color/colorLight"
                     android:textSize="18dp"
                     android:textStyle="bold" />
@@ -76,6 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
+                    android:fontFamily="@font/nunito_sans"
                     android:textColor="@color/colorLightGrey"
                     android:text="2020-5-6"
                     android:textSize="16dp" />
@@ -91,6 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Rating :"
+                    android:fontFamily="@font/nunito_sans_bold"
                     android:textColor="@color/colorLight"
                     android:textSize="18dp"
                     android:textStyle="bold" />
@@ -100,6 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
+                    android:fontFamily="@font/nunito_sans"
                     android:textColor="@color/colorLightGrey"
                     android:text="6.6"
                     android:textSize="18dp" />
@@ -124,8 +133,51 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:fontFamily="@font/nunito_sans"
         android:textColor="@color/colorLightGrey"
         android:text="This is the synopsis of the movie"
-        android:textSize="15dp" />
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/trailerHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:text="Trailer"
+        android:fontFamily="@font/amarante"
+        android:textStyle="bold"
+        android:letterSpacing="0.02"
+        android:textColor="@color/colorLight"
+        android:textSize="30dp"
+        android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/trailerList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"/>
+
+    <TextView
+        android:id="@+id/reviewHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:text="Reviews"
+        android:fontFamily="@font/amarante"
+        android:textStyle="bold"
+        android:letterSpacing="0.02"
+        android:textColor="@color/colorLight"
+        android:textSize="30dp"
+        android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reviewsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:nestedScrollingEnabled="false"/>
 
 </LinearLayout>
+</ScrollView>

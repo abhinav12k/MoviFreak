@@ -49,7 +49,7 @@ public class JsonUtils {
             JSONArray genreIds = movie.getJSONArray("genre_ids");
 
             ArrayList<Integer> genreIdList = new ArrayList<>();
-            Log.d(TAG,"genreId Size: "+genreIds.length());
+//            Log.d(TAG,"genreId Size: "+genreIds.length());
             for(int j=0;j<genreIds.length();j++){
                 try {
                     genreIdList.add(j,genreIds.getInt(j));
@@ -85,7 +85,7 @@ public class JsonUtils {
             new_trailer.setKey(trailer.getString("key"));
             new_trailer.setName(trailer.getString("name"));
 
-            Log.d(TAG,new_trailer.toString());
+//            Log.d(TAG,new_trailer.toString());
             trailers.add(i,new_trailer);
         }
 
@@ -114,7 +114,7 @@ public class JsonUtils {
             new_review.setId(review.getString("id"));
             new_review.setUrl(review.getString("url"));
 
-            Log.d(TAG,new_review.toString());
+//            Log.d(TAG,new_review.toString());
             reviews.add(i,new_review);
         }
 
