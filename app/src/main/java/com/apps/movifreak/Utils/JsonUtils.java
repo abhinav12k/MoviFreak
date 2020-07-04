@@ -3,6 +3,8 @@ package com.apps.movifreak.Utils;
 import android.util.Log;
 
 import com.apps.movifreak.Model.Movie;
+import com.apps.movifreak.Model.Review;
+import com.apps.movifreak.Model.Trailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,6 +64,61 @@ public class JsonUtils {
         }
 
         return movie_results;
+    }
+
+    public static ArrayList<Trailer> parseTrailerJsonArray(String json) throws JSONException {
+
+        JSONObject searchResult = new JSONObject(json);
+        long id = searchResult.getLong("id");
+
+        JSONArray resultArray = searchResult.getJSONArray("results");
+
+        ArrayList<Trailer> trailers = new ArrayList<>();
+
+        for(int i=0;i<resultArray.length();i++){
+
+            JSONObject trailer = resultArray.getJSONObject(i);
+
+            Trailer new_trailer = new Trailer();
+
+            new_trailer.setId(trailer.getString("id"));
+            new_trailer.setKey(trailer.getString("key"));
+            new_trailer.setName(trailer.getString("name"));
+
+            Log.d(TAG,new_trailer.toString());
+            trailers.add(i,new_trailer);
+        }
+
+        return trailers;
+    }
+
+    public static ArrayList<Review> parseReviewJsonArray(String json) throws JSONException {
+
+        JSONObject searchResult = new JSONObject(json);
+        long id = searchResult.getLong("id");
+        int page = searchResult.getInt("page");
+        int totalPages = searchResult.getInt("total_pages");
+
+        JSONArray resultArray = searchResult.getJSONArray("results");
+
+        ArrayList<Review> reviews = new ArrayList<>();
+
+        for(int i=0;i<resultArray.length();i++){
+
+            JSONObject review = resultArray.getJSONObject(i);
+
+            Review new_review = new Review();
+
+            new_review.setAuthor(review.getString("author"));
+            new_review.setContent(review.getString("content"));
+            new_review.setId(review.getString("id"));
+            new_review.setUrl(review.getString("url"));
+
+            Log.d(TAG,new_review.toString());
+            reviews.add(i,new_review);
+        }
+
+        return reviews;
     }
 
 }

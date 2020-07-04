@@ -48,6 +48,27 @@ public class NetworkUtils {
 
     }
 
+    //for getting url ready for trailers/reviews
+    public static URL buildUrlForDetailActivity(long Id,String type,String api_key){
+        //type - videos/reviews
+
+        String searchUrl = MOVIES_DB_BASE_URL+"/"+Id+"/"+type;
+
+        Uri buildUri = Uri.parse(searchUrl).buildUpon()
+                .appendQueryParameter(API_KEY,api_key)
+                .build();
+
+        URL url = null;
+
+        try{
+            url = new URL(buildUri.toString());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
     //for getting json response
     public static String getResponseFromUrl(URL url) throws IOException {
 

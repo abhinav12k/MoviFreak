@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -60,9 +61,9 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_thumbnails);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this,3,RecyclerView.VERTICAL,false);
         mRecyclerView.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
         myAdapter = new MovieAdapter(totalMovies);
         mRecyclerView.setAdapter(myAdapter);
-
 
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public class getMoviesTask extends AsyncTask<URL,Void, ArrayList<Movie>>{
+    private class getMoviesTask extends AsyncTask<URL,Void, ArrayList<Movie>>{
 
         @Override
         protected ArrayList<Movie> doInBackground(URL... urls) {
@@ -147,5 +148,4 @@ public class MainActivity extends AppCompatActivity {
             totalMovies.addAll(movies);
         }
     }
-
 }
