@@ -17,10 +17,10 @@ import java.util.List;
 public interface MovieDao {
 
     @Query("SELECT * FROM favMovie ORDER BY release_date")
-    LiveData<List<FavMovie>> loadAllFavMoviesByReleaseDate();
+    LiveData<List<FavMovie>> loadAllMoviesByReleaseDate();
 
     @Query("SELECT * FROM favMovie ORDER BY id")
-    LiveData<List<FavMovie>> loadAllFavMoviesById();
+    LiveData<List<FavMovie>> loadAllMoviesById();
 
     @Insert
     void insertMovie(FavMovie favMovie);
@@ -32,6 +32,9 @@ public interface MovieDao {
     void deleteMovie(FavMovie favMovie);
 
     @Query("SELECT * FROM favMovie WHERE title LIKE :title || '%'")
-    LiveData<List<FavMovie>> loadFavMovieByTitle(String title);
+    LiveData<List<FavMovie>> loadMovieByTitle(String title);
+
+    @Query("SELECT * FROM favMovie WHERE movieId = :movieId")
+    FavMovie loadMovieById(long movieId);
 
 }

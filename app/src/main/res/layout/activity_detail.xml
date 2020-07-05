@@ -16,6 +16,9 @@
         android:layout_height="wrap_content"
         android:background="@color/colorText"
         android:theme="@style/ActionBarTheme"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/detail_bg"
@@ -24,7 +27,26 @@
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"/>
 
+        <ImageView
+            android:id="@+id/fav_btn_empty"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_star_empty"
+            android:layout_alignParentRight="true"
+            android:hapticFeedbackEnabled="true"
+            android:layout_margin="15dp"/>
 
+        <ImageView
+            android:id="@+id/fav_btn_filled"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_star_filled"
+            android:layout_alignParentRight="true"
+            android:hapticFeedbackEnabled="true"
+            android:layout_margin="15dp"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

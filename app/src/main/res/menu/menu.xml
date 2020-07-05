@@ -3,8 +3,15 @@
 
     <item android:id="@+id/most_pop"
         android:title="Most Popular"
-        android:orderInCategory="0"/>
+        android:orderInCategory="0"
+        android:icon="@drawable/ic_popularity"/>
     <item android:id="@+id/top_rated"
         android:title="Top Rated"
-        android:orderInCategory="1"/>
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_top_rated"/>
+    <item
+        android:id="@+id/fav_movies"
+        android:title="Favorite Movies"
+        android:orderInCategory="2"
+        android:icon="@drawable/ic_star_filled"/>
 </menu>

@@ -3,11 +3,13 @@ package com.apps.movifreak.Home;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Layout;
@@ -15,19 +17,24 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.apps.movifreak.Adapter.ReviewAdapter;
 import com.apps.movifreak.Adapter.TrailerAdapter;
+import com.apps.movifreak.Database.AppDatabase;
+import com.apps.movifreak.Database.FavMovie;
 import com.apps.movifreak.Model.Movie;
 import com.apps.movifreak.Model.Review;
 import com.apps.movifreak.Model.Trailer;
 import com.apps.movifreak.R;
+import com.apps.movifreak.Utils.AppExecutors;
 import com.apps.movifreak.Utils.JsonUtils;
 import com.apps.movifreak.Utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -40,19 +47,26 @@ public class DetailActivity extends AppCompatActivity {
     private TextView reviewHeading;
     private RecyclerView trailerRecyclerView;
     private RecyclerView reviewsRecyclerView;
+    private ImageView fav_image_empty;
+    private ImageView fav_image_filled;
 
     private ArrayList<Trailer> trailerArrayList;
     private ArrayList<Review> reviewArrayList;
-//    private ArrayList<String> imagesArrayList;
+
+    //Database
+    private AppDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        //instantiating database
+        mDb = AppDatabase.getInstance(getApplicationContext());
+
         //getting intent from main activity
         Intent incomingIntent = getIntent();
-        Movie clickedMovie = (Movie) incomingIntent.getSerializableExtra("movie_details");
+        final Movie clickedMovie = (Movie) incomingIntent.getSerializableExtra("movie_details");
 
         //setting up widgets
 //        movie_title =(TextView) findViewById(R.id.movie_title);
@@ -64,6 +78,8 @@ public class DetailActivity extends AppCompatActivity {
         reviewHeading = (TextView) findViewById(R.id.reviewHeading);
         trailerRecyclerView = (RecyclerView) findViewById(R.id.trailerList);
         reviewsRecyclerView = (RecyclerView) findViewById(R.id.reviewsList);
+        fav_image_empty = (ImageView) findViewById(R.id.fav_btn_empty);
+        fav_image_filled = (ImageView) findViewById(R.id.fav_btn_filled);
 
         //Movie Details
         String title = clickedMovie.getTitle();
@@ -71,7 +87,7 @@ public class DetailActivity extends AppCompatActivity {
         String releaseDate = clickedMovie.getRelease_date();
         String rating = String.valueOf(clickedMovie.getRating());
         String lang = clickedMovie.getOriginal_language();
-        long id = clickedMovie.getId();
+        final long id = clickedMovie.getId();
 
         if(lang==null){
             lang = "en";
@@ -85,7 +101,7 @@ public class DetailActivity extends AppCompatActivity {
         movie_synopsis.setText(synopsis);
 
         //setting toolbar
-        Toolbar main_toolbar = findViewById(R.id.main_toolbar);
+        final Toolbar main_toolbar = findViewById(R.id.main_toolbar);
         main_toolbar.setContentInsetStartWithNavigation(0);
         setSupportActionBar(main_toolbar);
 
@@ -99,6 +115,63 @@ public class DetailActivity extends AppCompatActivity {
         Picasso.with(this).load(movie_url).into(background);
 
         getTrailer_and_reviews(id);
+
+        //checking if the movie is already added to favorite
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                FavMovie movie = mDb.movieDao().loadMovieById(id);
+                if(movie!=null) {
+                    fav_image_filled.setVisibility(View.VISIBLE);
+                    fav_image_empty.setVisibility(View.GONE);
+                }else{
+                    fav_image_empty.setVisibility(View.VISIBLE);
+                    fav_image_filled.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        fav_image_empty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                fav_image_empty.setVisibility(View.GONE);
+                fav_image_filled.setVisibility(View.VISIBLE);
+
+                //getting fav movie details
+                Date date = new Date();
+
+                final FavMovie favMovie = new FavMovie(clickedMovie.getTitle(),clickedMovie.getSummary(),clickedMovie.getRating(),clickedMovie.getRelease_date(),clickedMovie.isAdult(),clickedMovie.getPoster_path(),clickedMovie.getVote_count(),clickedMovie.getPopularity(),clickedMovie.getBackdrop_path(),date,clickedMovie.getId());
+
+                //save details to the database
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDb.movieDao().insertMovie(favMovie);
+                    }
+                });
+                Toast.makeText(DetailActivity.this, "Added to collection!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        fav_image_filled.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                fav_image_filled.setVisibility(View.GONE);
+                fav_image_empty.setVisibility(View.VISIBLE);
+
+                //delete details from the database
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        FavMovie deleteMovie = mDb.movieDao().loadMovieById(id);
+                        mDb.movieDao().deleteMovie(deleteMovie);
+                    }
+                });
+                Toast.makeText(DetailActivity.this, "Removed from collection!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 

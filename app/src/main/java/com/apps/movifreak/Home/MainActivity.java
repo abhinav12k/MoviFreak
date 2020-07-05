@@ -22,6 +22,7 @@ import com.apps.movifreak.Model.Movie;
 import com.apps.movifreak.R;
 import com.apps.movifreak.Utils.JsonUtils;
 import com.apps.movifreak.Utils.NetworkUtils;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
 
@@ -41,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private MovieAdapter myAdapter;
     private String typeOfMovie = "popular";
 
+    //Bottom navigation view
+    private BottomNavigationView bottomNavigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar main_toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(main_toolbar);
         main_toolbar.setTitleTextColor(getResources().getColor(R.color.colorRed));
+
+        //bottom navigation view
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Pop Movies");
@@ -81,47 +88,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+                switch (item.getItemId()){
 
-        getMenuInflater().inflate(R.menu.menu,menu);
-        return true;
+                    case R.id.most_pop:
+                        if(!typeOfMovie.equals("popular")) {
+                            totalMovies.clear();
+                            typeOfMovie = "popular";
+                            new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", 1));
+                            actionBar.setTitle("Pop Movies");
+                            myAdapter.updateDataSet(totalMovies);
+                        }
+                        return true;
 
-    }
+                    case R.id.top_rated:
+                        if(!typeOfMovie.equals("top_rated")) {
+                            totalMovies.clear();
+                            typeOfMovie = "top_rated";
+                            new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", 1));
+                            actionBar.setTitle("Top Rated Movies");
+                            myAdapter.updateDataSet(totalMovies);
+                        }
+                        return true;
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        switch (item.getItemId()){
-
-            case R.id.most_pop:
-                if(!typeOfMovie.equals("popular")) {
-                    totalMovies.clear();
-                    typeOfMovie = "popular";
-                    new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", 1));
-                    actionBar.setTitle("Pop Movies");
-                    myAdapter.updateDataSet(totalMovies);
+                    default:
+                        return false;
                 }
-                return true;
-
-            case R.id.top_rated:
-                if(!typeOfMovie.equals("top_rated")) {
-                    totalMovies.clear();
-                    typeOfMovie = "top_rated";
-                    new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", 1));
-                    actionBar.setTitle("Top Rated Movies");
-                    myAdapter.updateDataSet(totalMovies);
-                }
-                return true;
-
-            default:
-                return false;
-
-        }
+            }
+        });
 
     }
+
 
     private class getMoviesTask extends AsyncTask<URL,Void, ArrayList<Movie>>{
 

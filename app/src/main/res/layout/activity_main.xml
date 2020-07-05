@@ -16,10 +16,23 @@
         android:layout_height="wrap_content"
         />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_thumbnails"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="2dp"/>
+        android:layout_marginBottom="59dp"
+        android:padding="2dp" />
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottom_navigation"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/menu"/>
+    </RelativeLayout>
 </LinearLayout>

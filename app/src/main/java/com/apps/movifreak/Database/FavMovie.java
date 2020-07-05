@@ -1,10 +1,12 @@
 package com.apps.movifreak.Database;
 
+import androidx.room.Dao;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by abhinav on 5/7/20.
@@ -14,6 +16,7 @@ public class FavMovie {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
+    private long movieId;
     private String title;
     private String overview;  //summary
     private int vote_average;     //rating
@@ -22,11 +25,11 @@ public class FavMovie {
     private String poster_path;
     private long vote_count;
     private double popularity;
-    private boolean video;
-    private ArrayList<Integer> genre_ids;
+    private String backdrop;    //landscape picture
+    private Date dateSaved;
 
     @Ignore
-    public FavMovie(String title, String overview, int vote_average, String release_date, boolean adult, String poster_path, long vote_count, double popularity, boolean video, ArrayList<Integer> genre_ids) {
+    public FavMovie(String title, String overview, int vote_average, String release_date, boolean adult, String poster_path, long vote_count, double popularity, String backdrop,Date dateSaved,long movieId) {
         this.title = title;
         this.overview = overview;
         this.vote_average = vote_average;
@@ -35,11 +38,12 @@ public class FavMovie {
         this.poster_path = poster_path;
         this.vote_count = vote_count;
         this.popularity = popularity;
-        this.video = video;
-        this.genre_ids = genre_ids;
+        this.backdrop = backdrop;
+        this.dateSaved = dateSaved;
+        this.movieId = movieId;
     }
 
-    public FavMovie(int id, String title, String overview, int vote_average, String release_date, boolean adult, String poster_path, long vote_count, double popularity, boolean video, ArrayList<Integer> genre_ids) {
+    public FavMovie(int id, String title, String overview, int vote_average, String release_date, boolean adult, String poster_path, long vote_count, double popularity, String backdrop, Date dateSaved,long movieId) {
         this.id = id;
         this.title = title;
         this.overview = overview;
@@ -49,8 +53,25 @@ public class FavMovie {
         this.poster_path = poster_path;
         this.vote_count = vote_count;
         this.popularity = popularity;
-        this.video = video;
-        this.genre_ids = genre_ids;
+        this.backdrop = backdrop;
+        this.dateSaved = dateSaved;
+        this.movieId = movieId;
+    }
+
+    public long getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(long movieId) {
+        this.movieId = movieId;
+    }
+
+    public Date getDateSaved() {
+        return dateSaved;
+    }
+
+    public void setDateSaved(Date dateSaved) {
+        this.dateSaved = dateSaved;
     }
 
     public int getId() {
@@ -125,20 +146,12 @@ public class FavMovie {
         this.popularity = popularity;
     }
 
-    public boolean isVideo() {
-        return video;
+    public String getBackdrop() {
+        return backdrop;
     }
 
-    public void setVideo(boolean video) {
-        this.video = video;
-    }
-
-    public ArrayList<Integer> getGenre_ids() {
-        return genre_ids;
-    }
-
-    public void setGenre_ids(ArrayList<Integer> genre_ids) {
-        this.genre_ids = genre_ids;
+    public void setBackdrop(String backdrop) {
+        this.backdrop = backdrop;
     }
 
 }
