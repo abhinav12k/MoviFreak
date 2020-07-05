@@ -22,14 +22,22 @@ public class Movie implements Serializable {
     private String backdrop_path;
     private String original_language;
     private String original_title;
+    private String landscapeImageUrl;
 
+    public String getLandscapeImageUrl() {
+        return landscapeImageUrl;
+    }
+
+    public void setLandscapeImageUrl(String landscapeImageUrl) {
+        this.landscapeImageUrl = landscapeImageUrl;
+    }
 
     //No arg constructor
     public Movie(){
 
     }
 
-    public Movie(String title, String summary, int rating, String release_date, boolean adult, long id, String poster_path, long vote_count, double popularity, boolean video, String backdrop_path, String original_language, String original_title, ArrayList<Integer> genre_ids) {
+    public Movie(String title, String summary, int rating, String release_date, boolean adult, long id, String poster_path, long vote_count, double popularity, boolean video, String backdrop_path, String original_language, String original_title, ArrayList<Integer> genre_ids,String landscapeImageUrl) {
         this.title = title;
         this.overview = summary;
         this.vote_average = rating;
@@ -44,6 +52,7 @@ public class Movie implements Serializable {
         this.original_language = original_language;
         this.original_title = original_title;
         this.genre_ids = genre_ids;
+        this.landscapeImageUrl = landscapeImageUrl;
     }
 
     @Override

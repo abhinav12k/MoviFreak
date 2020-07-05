@@ -39,7 +39,8 @@ public class JsonUtils {
             new_movie.setId(movie.getLong("id"));
             new_movie.setRating(movie.getInt("vote_average"));
             new_movie.setPopularity(movie.getDouble("popularity"));
-            new_movie.setPoster_path(NetworkUtils.getImageUrl(movie.getString("poster_path"),"w342"));
+            new_movie.setPoster_path(NetworkUtils.getPosterImageUrl(movie.getString("poster_path"),"w342"));
+            new_movie.setLandscapeImageUrl(NetworkUtils.getLandscapeImageUrl(movie.getString("backdrop_path"),"w780"));
             new_movie.setVote_count(movie.getLong("vote_count"));
             new_movie.setVideo(movie.getBoolean("video"));
             new_movie.setTitle(movie.getString("title"));

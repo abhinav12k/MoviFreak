@@ -48,7 +48,7 @@ public class NetworkUtils {
 
     }
 
-    //for getting url ready for trailers/reviews
+    //for getting url ready for trailers/reviews/images
     public static URL buildUrlForDetailActivity(long Id,String type,String api_key){
         //type - videos/reviews
 
@@ -91,7 +91,7 @@ public class NetworkUtils {
     }
 
     //for getting poster image url
-    public static String getImageUrl(String poster_path,String sizeOfImage){
+    public static String getPosterImageUrl(String poster_path,String sizeOfImage){
 
         //w185 for thumbnail size poster image
         String BASE_IMAGE_URL ="https://image.tmdb.org/t/p/"+sizeOfImage+"/";
@@ -100,6 +100,14 @@ public class NetworkUtils {
 
     }
 
+    //for getting poster for detail activity
+    public static String getLandscapeImageUrl(String backdrop_path,String sizeOfImage){
 
+        //w780 for landscape size image
+        String BASE_IMAGE_URL ="https://image.tmdb.org/t/p/"+sizeOfImage+"/";
+        String imageUrl = BASE_IMAGE_URL+backdrop_path;
+        return imageUrl;
+
+    }
 }
 

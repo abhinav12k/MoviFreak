@@ -43,6 +43,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private ArrayList<Trailer> trailerArrayList;
     private ArrayList<Review> reviewArrayList;
+//    private ArrayList<String> imagesArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +93,7 @@ public class DetailActivity extends AppCompatActivity {
         actionBar.setTitle(title);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        String movie_url = clickedMovie.getPoster_path();
+        String movie_url = clickedMovie.getLandscapeImageUrl();
 
         ImageView background = findViewById(R.id.detail_bg);
         Picasso.with(this).load(movie_url).into(background);
