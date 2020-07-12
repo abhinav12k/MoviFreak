@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBar actionBar;
 
     private int pageNo = 1;
-    private ArrayList<Movie> totalMovies = new ArrayList<>();
+    private static ArrayList<Movie> totalMovies = new ArrayList<>();
     private MovieAdapter myAdapter;
     private String typeOfMovie = "popular";
 
@@ -114,6 +115,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return true;
 
+                    case R.id.fav_movies:
+                        Intent favIntent = new Intent(MainActivity.this,favActivity.class);
+                        startActivity(favIntent);
+                        return true;
 
                     default:
                         return false;
@@ -124,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class getMoviesTask extends AsyncTask<URL,Void, ArrayList<Movie>>{
+    private static class getMoviesTask extends AsyncTask<URL,Void, ArrayList<Movie>>{
 
         @Override
         protected ArrayList<Movie> doInBackground(URL... urls) {

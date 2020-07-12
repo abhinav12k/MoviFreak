@@ -1,5 +1,6 @@
 package com.apps.movifreak.Home;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,6 +14,8 @@ import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -56,6 +59,16 @@ public class DetailActivity extends AppCompatActivity {
     //Database
     private AppDatabase mDb;
 
+    //getting movie
+    private Movie clickedMovie;
+    private FavMovie clickedFavMovie;
+
+    //Movie Details
+    private String title,synopsis,releaseDate,rating,lang,movie_url;
+    private long id;
+
+    private static final String TAG = DetailActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,10 +76,6 @@ public class DetailActivity extends AppCompatActivity {
 
         //instantiating database
         mDb = AppDatabase.getInstance(getApplicationContext());
-
-        //getting intent from main activity
-        Intent incomingIntent = getIntent();
-        final Movie clickedMovie = (Movie) incomingIntent.getSerializableExtra("movie_details");
 
         //setting up widgets
 //        movie_title =(TextView) findViewById(R.id.movie_title);
@@ -81,16 +90,47 @@ public class DetailActivity extends AppCompatActivity {
         fav_image_empty = (ImageView) findViewById(R.id.fav_btn_empty);
         fav_image_filled = (ImageView) findViewById(R.id.fav_btn_filled);
 
-        //Movie Details
-        String title = clickedMovie.getTitle();
-        String synopsis = clickedMovie.getSummary();
-        String releaseDate = clickedMovie.getRelease_date();
-        String rating = String.valueOf(clickedMovie.getRating());
-        String lang = clickedMovie.getOriginal_language();
-        final long id = clickedMovie.getId();
+        //getting intent from main activity
+        Intent incomingIntent = getIntent();
+        if(incomingIntent.hasExtra("movie_details")) {
+            clickedMovie = (Movie) incomingIntent.getSerializableExtra("movie_details");
 
-        if(lang==null){
-            lang = "en";
+            //Movie Details
+            title = clickedMovie.getTitle();
+            synopsis = clickedMovie.getSummary();
+            releaseDate = clickedMovie.getRelease_date();
+            rating = String.valueOf(clickedMovie.getRating());
+            lang = clickedMovie.getOriginal_language();
+            id = clickedMovie.getId();
+            movie_url = clickedMovie.getLandscapeImageUrl();
+
+            if(lang==null){
+                lang = "en";
+            }
+
+        }else{
+
+            try {
+                Bundle bundle = incomingIntent.getBundleExtra("fav_movie_bundle");
+                clickedFavMovie = bundle.getParcelable("fav_movie_details");
+
+                Log.d(TAG, clickedFavMovie.toString());
+
+                //Movie Details
+                title = clickedFavMovie.getTitle();
+                synopsis = clickedFavMovie.getOverview();
+                releaseDate = clickedFavMovie.getRelease_date();
+                rating = String.valueOf(clickedFavMovie.getVote_average());
+                lang = clickedFavMovie.getOriginal_language();
+                id = clickedFavMovie.getMovieId();
+                movie_url = clickedFavMovie.getBackdrop();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            if(lang==null){
+                lang = "en";
+            }
+
         }
 
         //filling up details
@@ -108,8 +148,6 @@ public class DetailActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(title);
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        String movie_url = clickedMovie.getLandscapeImageUrl();
 
         ImageView background = findViewById(R.id.detail_bg);
         Picasso.with(this).load(movie_url).into(background);
@@ -141,7 +179,7 @@ public class DetailActivity extends AppCompatActivity {
                 //getting fav movie details
                 Date date = new Date();
 
-                final FavMovie favMovie = new FavMovie(clickedMovie.getTitle(),clickedMovie.getSummary(),clickedMovie.getRating(),clickedMovie.getRelease_date(),clickedMovie.isAdult(),clickedMovie.getPoster_path(),clickedMovie.getVote_count(),clickedMovie.getPopularity(),clickedMovie.getBackdrop_path(),date,clickedMovie.getId());
+                final FavMovie favMovie = new FavMovie(clickedMovie.getTitle(),clickedMovie.getSummary(),clickedMovie.getRating(),clickedMovie.getRelease_date(),clickedMovie.isAdult(),clickedMovie.getPoster_path(),clickedMovie.getVote_count(),clickedMovie.getPopularity(),clickedMovie.getLandscapeImageUrl(),date,clickedMovie.getId(),clickedMovie.getOriginal_language());
 
                 //save details to the database
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
@@ -175,9 +213,19 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
-    private void setupReviewsList() {
-        //setting up reviews list
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    private void setupReviewsList() {
+
+        //setting up reviews list
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DetailActivity.this,RecyclerView.VERTICAL,false);
         reviewsRecyclerView.setLayoutManager(linearLayoutManager);
         reviewsRecyclerView.setHasFixedSize(true);
@@ -258,7 +306,7 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Review> reviews) {
             reviewArrayList = reviews;
-            if(reviewArrayList.size()!=0&&!reviewArrayList.isEmpty())
+            if(reviewArrayList.size()!=0&&!reviews.isEmpty())
                 reviewHeading.setVisibility(View.VISIBLE);
             setupReviewsList();
         }

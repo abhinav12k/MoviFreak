@@ -12,7 +12,7 @@ import androidx.room.TypeConverters;
  * Created by abhinav on 5/7/20.
  */
 
-@Database(entities = {FavMovie.class}, version = 1, exportSchema = false)
+@Database(entities = {FavMovie.class}, version = 2, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -26,7 +26,8 @@ public abstract class AppDatabase extends RoomDatabase {
         if(sInstance==null){
             synchronized (Lock){
                 Log.d(TAG,"Creating new database instance");
-                sInstance = Room.databaseBuilder(context.getApplicationContext(),AppDatabase.class,AppDatabase.DATABASE_NAME).build();
+                sInstance = Room.databaseBuilder(context.getApplicationContext(),AppDatabase.class,AppDatabase.DATABASE_NAME)
+                        .fallbackToDestructiveMigration().build();
             }
         }
         Log.d(TAG,"getting database instance");
