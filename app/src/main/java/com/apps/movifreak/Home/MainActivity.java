@@ -62,9 +62,12 @@ public class MainActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
         actionBar.setTitle("Pop Movies");
 
-        //getting movies list asynchronously
-        new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie,getString(R.string.api_key),"en-US",pageNo));
-
+        if(savedInstanceState!=null&&savedInstanceState.containsKey("movies_list")){
+            totalMovies = savedInstanceState.getParcelableArrayList("movies_list");
+        }else {
+            //getting movies list asynchronously
+            new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", pageNo));
+        }
         //Setting up recycler view
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_thumbnails);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this,3,RecyclerView.VERTICAL,false);
@@ -153,5 +156,17 @@ public class MainActivity extends AppCompatActivity {
 
             totalMovies.addAll(movies);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
+        outState.putParcelableArrayList("movies_list",totalMovies);
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
+    protected void onResume() {
+        bottomNavigationView.setSelectedItemId(R.id.most_pop);
+        super.onResume();
     }
 }

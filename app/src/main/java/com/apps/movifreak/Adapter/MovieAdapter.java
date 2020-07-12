@@ -2,6 +2,7 @@ package com.apps.movifreak.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,7 +87,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
                 Movie currentMovie = movieList.get(position);
                 Intent DetailIntent = new Intent(mContext, DetailActivity.class);
-                DetailIntent.putExtra("movie_details",currentMovie);
+                Bundle b = new Bundle();
+                b.putParcelable("movie_details",currentMovie);
+                DetailIntent.putExtra("movie_bundle",b);
+                DetailIntent.putExtra("movie_details","from Main Activity");
                 mContext.startActivity(DetailIntent);
 
             }

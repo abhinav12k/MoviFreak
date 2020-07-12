@@ -1,12 +1,15 @@
 package com.apps.movifreak.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by abhinav on 21/6/20.
  */
-public class Movie implements Serializable {
+public class Movie implements Parcelable {
 
     private String title;
     private String overview;  //summary
@@ -23,6 +26,35 @@ public class Movie implements Serializable {
     private String original_language;
     private String original_title;
     private String landscapeImageUrl;
+
+    protected Movie(Parcel in) {
+        title = in.readString();
+        overview = in.readString();
+        vote_average = in.readInt();
+        release_date = in.readString();
+        adult = in.readByte() != 0;
+        id = in.readLong();
+        poster_path = in.readString();
+        vote_count = in.readLong();
+        popularity = in.readDouble();
+        video = in.readByte() != 0;
+        backdrop_path = in.readString();
+        original_language = in.readString();
+        original_title = in.readString();
+        landscapeImageUrl = in.readString();
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public String getLandscapeImageUrl() {
         return landscapeImageUrl;
@@ -187,5 +219,28 @@ public class Movie implements Serializable {
 
     public void setGenre_ids(ArrayList<Integer> genre_ids) {
         this.genre_ids = genre_ids;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(overview);
+        dest.writeInt(vote_average);
+        dest.writeString(release_date);
+        dest.writeByte((byte) (adult ? 1 : 0));
+        dest.writeLong(id);
+        dest.writeString(poster_path);
+        dest.writeLong(vote_count);
+        dest.writeDouble(popularity);
+        dest.writeByte((byte) (video ? 1 : 0));
+        dest.writeString(backdrop_path);
+        dest.writeString(original_language);
+        dest.writeString(original_title);
+        dest.writeString(landscapeImageUrl);
     }
 }

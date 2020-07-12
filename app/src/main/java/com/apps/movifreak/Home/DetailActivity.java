@@ -93,7 +93,10 @@ public class DetailActivity extends AppCompatActivity {
         //getting intent from main activity
         Intent incomingIntent = getIntent();
         if(incomingIntent.hasExtra("movie_details")) {
-            clickedMovie = (Movie) incomingIntent.getSerializableExtra("movie_details");
+            Bundle bundle = incomingIntent.getBundleExtra("movie_bundle");
+            clickedMovie = bundle.getParcelable("movie_details");
+
+            Log.d(TAG, clickedMovie.toString());
 
             //Movie Details
             title = clickedMovie.getTitle();
