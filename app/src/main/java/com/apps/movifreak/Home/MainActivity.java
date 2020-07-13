@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private ActionBar actionBar;
 
     private int pageNo = 1;
-    private static ArrayList<Movie> totalMovies = new ArrayList<>();
-    private MovieAdapter myAdapter;
+    private ArrayList<Movie> totalMovies = new ArrayList<>();
+    private MovieAdapter myAdapter = new MovieAdapter(this);
     private String typeOfMovie = "popular";
 
     //Bottom navigation view
@@ -67,26 +67,26 @@ public class MainActivity extends AppCompatActivity {
         }else {
             //getting movies list asynchronously
             new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", pageNo));
+            Log.d(TAG,"Page no start: "+pageNo);
         }
+
         //Setting up recycler view
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_thumbnails);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this,3,RecyclerView.VERTICAL,false);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        myAdapter = new MovieAdapter(totalMovies);
         mRecyclerView.setAdapter(myAdapter);
-
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if(!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE){
+                if(!recyclerView.canScrollVertically(1)){
                     pageNo++;
                     Log.d(TAG,"Page no: "+pageNo);
                     new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie,getString(R.string.api_key),"en-US",pageNo));
-                    myAdapter.updateDataSet(totalMovies);
+
                 }
 
             }
@@ -100,21 +100,23 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.most_pop:
                         if(!typeOfMovie.equals("popular")) {
+                            pageNo = 1;
                             totalMovies.clear();
                             typeOfMovie = "popular";
                             new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", 1));
                             actionBar.setTitle("Pop Movies");
-                            myAdapter.updateDataSet(totalMovies);
+
                         }
                         return true;
 
                     case R.id.top_rated:
                         if(!typeOfMovie.equals("top_rated")) {
+                            pageNo = 1;
                             totalMovies.clear();
                             typeOfMovie = "top_rated";
                             new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", 1));
                             actionBar.setTitle("Top Rated Movies");
-                            myAdapter.updateDataSet(totalMovies);
+
                         }
                         return true;
 
@@ -132,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private static class getMoviesTask extends AsyncTask<URL,Void, ArrayList<Movie>>{
+    private class getMoviesTask extends AsyncTask<URL,Void, ArrayList<Movie>>{
 
         @Override
         protected ArrayList<Movie> doInBackground(URL... urls) {
@@ -153,8 +155,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
-
-            totalMovies.addAll(movies);
+            if(movies!=null&& !movies.isEmpty()) {
+                totalMovies.addAll(movies);
+                myAdapter.addMovies(totalMovies);
+            }
         }
     }
 

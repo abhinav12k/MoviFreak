@@ -29,15 +29,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
-    private ArrayList<Movie> movieList;
+    private ArrayList<Movie> movieList = new ArrayList<>();
     private Context mContext;
 
-    public MovieAdapter(ArrayList<Movie> mList){
-        this.movieList = mList;
+    public MovieAdapter(Context mContext){
+        this.mContext = mContext;
     }
 
-    public void updateDataSet(ArrayList<Movie> newMoviesList){
-        movieList= newMoviesList;
+    public void addMovies(ArrayList<Movie> mList){
+        this.movieList = mList;
         notifyDataSetChanged();
     }
 
@@ -46,9 +46,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public MovieAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View listItem = layoutInflater.inflate(R.layout.single_movie_tile,parent,false);
-        MovieAdapter.ViewHolder viewHolder = new MovieAdapter.ViewHolder(listItem);
-        mContext = parent.getContext();
-        return viewHolder;
+        return new MovieAdapter.ViewHolder(listItem);
     }
 
     @Override
