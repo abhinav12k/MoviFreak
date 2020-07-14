@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<Movie> movies) {
             if(movies!=null&& !movies.isEmpty()) {
                 totalMovies.addAll(movies);
-                myAdapter.addMovies(totalMovies);
+                myAdapter.notifyDataSetChanged();
             }
         }
     }
