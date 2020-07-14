@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private ActionBar actionBar;
 
     private int pageNo = 1;
+    private int activeId;
+    private String returnActivity = "";
     private ArrayList<Movie> totalMovies = new ArrayList<>();
     private MovieAdapter myAdapter = new MovieAdapter(this);
     private String typeOfMovie = "popular";
@@ -62,19 +64,21 @@ public class MainActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
         actionBar.setTitle("Pop Movies");
 
-        if(savedInstanceState!=null&&savedInstanceState.containsKey("movies_list")){
+        if (savedInstanceState != null && savedInstanceState.containsKey("movies_list")) {
+            activeId = savedInstanceState.getInt("type_of_movie");
             totalMovies = savedInstanceState.getParcelableArrayList("movies_list");
-        }else {
+        } else {
             //getting movies list asynchronously
             new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", pageNo));
-            Log.d(TAG,"Page no start: "+pageNo);
+            Log.d(TAG, "Page no start: " + pageNo);
         }
 
         //Setting up recycler view
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_thumbnails);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this,3,RecyclerView.VERTICAL,false);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, 3, RecyclerView.VERTICAL, false);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
+        myAdapter.addMovies(totalMovies);
         mRecyclerView.setAdapter(myAdapter);
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -82,10 +86,10 @@ public class MainActivity extends AppCompatActivity {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if(!recyclerView.canScrollVertically(1)){
+                if (!recyclerView.canScrollVertically(1)) {
                     pageNo++;
-                    Log.d(TAG,"Page no: "+pageNo);
-                    new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie,getString(R.string.api_key),"en-US",pageNo));
+                    Log.d(TAG, "Page no: " + pageNo);
+                    new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", pageNo));
 
                 }
 
@@ -96,10 +100,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
 
                     case R.id.most_pop:
-                        if(!typeOfMovie.equals("popular")) {
+                        if (!typeOfMovie.equals("popular")) {
                             pageNo = 1;
                             totalMovies.clear();
                             typeOfMovie = "popular";
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.top_rated:
-                        if(!typeOfMovie.equals("top_rated")) {
+                        if (!typeOfMovie.equals("top_rated")) {
                             pageNo = 1;
                             totalMovies.clear();
                             typeOfMovie = "top_rated";
@@ -121,8 +125,9 @@ public class MainActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.fav_movies:
-                        Intent favIntent = new Intent(MainActivity.this,favActivity.class);
+                        Intent favIntent = new Intent(MainActivity.this, favActivity.class);
                         startActivity(favIntent);
+                        returnActivity = "favActivity";
                         return true;
 
                     default:
@@ -134,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class getMoviesTask extends AsyncTask<URL,Void, ArrayList<Movie>>{
+    private class getMoviesTask extends AsyncTask<URL, Void, ArrayList<Movie>> {
 
         @Override
         protected ArrayList<Movie> doInBackground(URL... urls) {
@@ -144,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             try {
-                String receivedJson =  NetworkUtils.getResponseFromUrl(url);
+                String receivedJson = NetworkUtils.getResponseFromUrl(url);
                 movieArrayList = JsonUtils.parseMovieJsonArray(receivedJson);
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
@@ -155,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
-            if(movies!=null&& !movies.isEmpty()) {
+            if (movies != null && !movies.isEmpty()) {
                 totalMovies.addAll(movies);
                 myAdapter.notifyDataSetChanged();
             }
@@ -164,13 +169,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        outState.putParcelableArrayList("movies_list",totalMovies);
+        outState.putParcelableArrayList("movies_list", totalMovies);
+        outState.putInt("type_of_movie", bottomNavigationView.getSelectedItemId());
         super.onSaveInstanceState(outState, outPersistentState);
     }
 
     @Override
     protected void onResume() {
-        bottomNavigationView.setSelectedItemId(R.id.most_pop);
+        if (returnActivity.equals("favActivity")) {
+            bottomNavigationView.setSelectedItemId(R.id.most_pop);
+        } else
+            bottomNavigationView.setSelectedItemId(activeId);
         super.onResume();
     }
 }
