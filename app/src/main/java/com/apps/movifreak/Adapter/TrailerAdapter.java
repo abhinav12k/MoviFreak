@@ -3,10 +3,12 @@ package com.apps.movifreak.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,7 +49,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
         String key = trailersList.get(position).getKey();
         final String youtubeLink = TRAILER_BASE_URL+key;
@@ -60,11 +62,13 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
                     public void onSuccess() {
                         //loading thumbnail complete disable progress bar
 
+                        holder.mProgressBar.setVisibility(View.INVISIBLE);
                     }
 
                     @Override
                     public void onError() {
                         //error in loading thumbnail
+                        Log.d(TAG,"Error in loading trailer images");
                     }
                 });
 
@@ -89,10 +93,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         public ImageView trailerThumbnail;
+        public ProgressBar mProgressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             trailerThumbnail = itemView.findViewById(R.id.trailerThumbnail);
+            mProgressBar = itemView.findViewById(R.id.progress_bar);
         }
     }
 }

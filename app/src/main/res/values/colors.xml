@@ -9,6 +9,6 @@
     <color name="transparent">#00000000</color>
     <color name="colorLight">#EDEDED</color>
     <color name="colorDark">#000000</color>
-    <color name="colorLightGrey">#d3d3d3</color>
+    <color name="colorLightGrey">#a8a7a3</color>
     <color name="colorRed">#c70039</color>
 </resources>

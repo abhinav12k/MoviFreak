@@ -20,7 +20,7 @@
         android:text="review text appears here"
         android:textSize="18dp"
         android:textStyle="italic"
-        android:textColor="@color/colorBackground"
+        android:textColor="@color/colorLightGrey"
         android:fontFamily="@font/nunito_sans"
         android:layout_below="@id/author_name"
         android:layout_marginStart="8dp"
@@ -29,7 +29,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorLight"
+        android:background="@color/colorLightGrey"
         android:layout_below="@id/review"
         android:layout_margin="10dp"/>
 

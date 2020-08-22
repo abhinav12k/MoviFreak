@@ -5,11 +5,13 @@
         <item>@font/amarante</item>
         <item>@font/berkshire_swash</item>
         <item>@font/capriola</item>
+        <item>@font/inder</item>
         <item>@font/lemonada</item>
         <item>@font/lemonada_light</item>
         <item>@font/lemonada_semibold</item>
         <item>@font/nunito_sans</item>
         <item>@font/nunito_sans_bold</item>
+        <item>@font/overpass_light</item>
         <item>@font/poppins_bold</item>
     </array>
 </resources>

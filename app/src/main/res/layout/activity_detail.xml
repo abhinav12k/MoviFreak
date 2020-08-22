@@ -3,197 +3,236 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Home.DetailActivity">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:background="@color/colorText"
-    android:orientation="vertical">
+    tools:context=".Home.DetailActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/main_toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorText"
-        android:theme="@style/ActionBarTheme"/>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/detail_bg"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/main_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+            android:layout_height="wrap_content"
+            android:background="@color/colorText"
+            android:theme="@style/ActionBarTheme" />
 
-        <ImageView
-            android:id="@+id/fav_btn_empty"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:src="@drawable/ic_star_empty"
-            android:layout_alignParentRight="true"
-            android:hapticFeedbackEnabled="true"
-            android:layout_margin="15dp"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/fav_btn_filled"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:src="@drawable/ic_star_filled"
-            android:layout_alignParentRight="true"
-            android:hapticFeedbackEnabled="true"
-            android:layout_margin="15dp"
-            android:visibility="gone"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    </RelativeLayout>
-        <LinearLayout
+
+                <ImageView
+                    android:id="@+id/detail_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="280dp"
+                    android:scaleType="centerCrop" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="280dp"
+                    android:background="@drawable/poster_background_gradient" />
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/fav_btn_empty"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_margin="15dp"
+                android:hapticFeedbackEnabled="true"
+                android:src="@drawable/ic_star_empty" />
+
+            <ImageView
+                android:id="@+id/fav_btn_filled"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_margin="15dp"
+                android:hapticFeedbackEnabled="true"
+                android:src="@drawable/ic_star_filled"
+                android:visibility="gone" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="140dp"
+                android:layout_height="210dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="180dp"
+                android:elevation="5dp"
+                android:scaleType="fitXY" />
+
+
+            <View
+                android:layout_width="140dp"
+                android:layout_height="210dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="180dp"
+                android:background="@drawable/poster_background_gradient" />
+
+        </RelativeLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="290dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/nunito_sans_bold"-->
+<!--                        android:text="Language :"-->
+<!--                        android:textColor="@color/colorLight"-->
+<!--                        android:textSize="18dp"-->
+<!--                        android:textStyle="bold" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/movie_language"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/inder"-->
+<!--                        android:padding="5dp"-->
+<!--                        android:text="en"-->
+<!--                        android:textColor="@color/colorLightGrey"-->
+<!--                        android:textSize="18dp" />-->
+
+<!--                </LinearLayout>-->
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_sans_bold"
+                        android:text="Release Date :"
+                        android:textColor="@color/colorLight"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/movie_releaseDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inder"
+                        android:padding="5dp"
+                        android:text="2020-5-6"
+                        android:textColor="@color/colorLightGrey"
+                        android:textSize="16dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nunito_sans_bold"
+                        android:text="Rating :"
+                        android:textColor="@color/colorLight"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/movie_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inder"
+                        android:padding="5dp"
+                        android:text="6.6"
+                        android:textColor="@color/colorLightGrey"
+                        android:textSize="18dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="60dp">
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/nunito_sans_bold"
+            android:letterSpacing="0.02"
+            android:text="Overview"
+            android:textColor="@color/colorLight"
+            android:textSize="30dp"
+            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+        <TextView
+            android:id="@+id/movie_synopsis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/inder"
+            android:text="This is the synopsis of the movie"
+            android:textColor="@color/colorLightGrey"
+            android:textSize="18dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Language :"
-                    android:fontFamily="@font/nunito_sans_bold"
-                    android:textColor="@color/colorLight"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
+        <TextView
+            android:id="@+id/trailerHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/nunito_sans_bold"
+            android:letterSpacing="0.02"
+            android:text="Trailer"
+            android:textColor="@color/colorLight"
+            android:textSize="30dp"
+            android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/movie_language"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:text="en"
-                    android:fontFamily="@font/nunito_sans"
-                    android:textColor="@color/colorLightGrey"
-                    android:textSize="18dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/trailerList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
 
-            </LinearLayout>
+        <TextView
+            android:id="@+id/reviewHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/nunito_sans_bold"
+            android:letterSpacing="0.02"
+            android:text="Reviews"
+            android:textColor="@color/colorLight"
+            android:textSize="30dp"
+            android:visibility="gone" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="12dp">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reviewsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:nestedScrollingEnabled="false" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Release Date :"
-                    android:fontFamily="@font/nunito_sans_bold"
-                    android:textColor="@color/colorLight"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/movie_releaseDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:fontFamily="@font/nunito_sans"
-                    android:textColor="@color/colorLightGrey"
-                    android:text="2020-5-6"
-                    android:textSize="16dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Rating :"
-                    android:fontFamily="@font/nunito_sans_bold"
-                    android:textColor="@color/colorLight"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/movie_rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:fontFamily="@font/nunito_sans"
-                    android:textColor="@color/colorLightGrey"
-                    android:text="6.6"
-                    android:textSize="18dp" />
-            </LinearLayout>
     </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:text="Plot"
-        android:fontFamily="@font/amarante"
-        android:textStyle="bold"
-        android:letterSpacing="0.02"
-        android:textColor="@color/colorLight"
-        android:textSize="30dp" />
-
-    <TextView
-        android:id="@+id/movie_synopsis"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:fontFamily="@font/nunito_sans"
-        android:textColor="@color/colorLightGrey"
-        android:text="This is the synopsis of the movie"
-        android:textSize="18dp" />
-
-    <TextView
-        android:id="@+id/trailerHeading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:text="Trailer"
-        android:fontFamily="@font/amarante"
-        android:textStyle="bold"
-        android:letterSpacing="0.02"
-        android:textColor="@color/colorLight"
-        android:textSize="30dp"
-        android:visibility="gone"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/trailerList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"/>
-
-    <TextView
-        android:id="@+id/reviewHeading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:text="Reviews"
-        android:fontFamily="@font/amarante"
-        android:textStyle="bold"
-        android:letterSpacing="0.02"
-        android:textColor="@color/colorLight"
-        android:textSize="30dp"
-        android:visibility="gone"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reviewsList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:nestedScrollingEnabled="false"/>
-
-</LinearLayout>
 </ScrollView>

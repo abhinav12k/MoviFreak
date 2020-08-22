@@ -52,6 +52,7 @@ public class DetailActivity extends AppCompatActivity {
     private RecyclerView reviewsRecyclerView;
     private ImageView fav_image_empty;
     private ImageView fav_image_filled;
+    private ImageView posterImage;
 
     private ArrayList<Trailer> trailerArrayList;
     private ArrayList<Review> reviewArrayList;
@@ -64,7 +65,7 @@ public class DetailActivity extends AppCompatActivity {
     private FavMovie clickedFavMovie;
 
     //Movie Details
-    private String title,synopsis,releaseDate,rating,lang,movie_url;
+    private String title,synopsis,releaseDate,rating,lang,movie_url,poster_path;
     private long id;
 
     private static final String TAG = DetailActivity.class.getSimpleName();
@@ -82,13 +83,14 @@ public class DetailActivity extends AppCompatActivity {
         movie_synopsis = (TextView) findViewById(R.id.movie_synopsis);
         movie_releaseDate = (TextView) findViewById(R.id.movie_releaseDate);
         movie_rating = (TextView) findViewById(R.id.movie_rating);
-        movie_language = (TextView) findViewById(R.id.movie_language);
+//        movie_language = (TextView) findViewById(R.id.movie_language);
         trailerHeading = (TextView) findViewById(R.id.trailerHeading);
         reviewHeading = (TextView) findViewById(R.id.reviewHeading);
         trailerRecyclerView = (RecyclerView) findViewById(R.id.trailerList);
         reviewsRecyclerView = (RecyclerView) findViewById(R.id.reviewsList);
         fav_image_empty = (ImageView) findViewById(R.id.fav_btn_empty);
         fav_image_filled = (ImageView) findViewById(R.id.fav_btn_filled);
+        posterImage = (ImageView) findViewById(R.id.poster);
 
         //getting intent from main activity
         Intent incomingIntent = getIntent();
@@ -106,6 +108,7 @@ public class DetailActivity extends AppCompatActivity {
             lang = clickedMovie.getOriginal_language();
             id = clickedMovie.getId();
             movie_url = clickedMovie.getLandscapeImageUrl();
+            poster_path = clickedMovie.getPoster_path();
 
             if(lang==null){
                 lang = "en";
@@ -127,6 +130,8 @@ public class DetailActivity extends AppCompatActivity {
                 lang = clickedFavMovie.getOriginal_language();
                 id = clickedFavMovie.getMovieId();
                 movie_url = clickedFavMovie.getBackdrop();
+                poster_path = clickedFavMovie.getPoster_path();
+
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -138,7 +143,7 @@ public class DetailActivity extends AppCompatActivity {
 
         //filling up details
 //        movie_title.setText(title);
-        movie_language.setText(lang);
+//        movie_language.setText(lang);
         movie_rating.setText(rating);
         movie_releaseDate.setText(releaseDate);
         movie_synopsis.setText(synopsis);
@@ -153,7 +158,13 @@ public class DetailActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         ImageView background = findViewById(R.id.detail_bg);
-        Picasso.with(this).load(movie_url).into(background);
+
+        try {
+            Picasso.with(this).load(movie_url).placeholder(R.drawable.bg).into(background);
+            Picasso.with(this).load(poster_path).into(posterImage);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         getTrailer_and_reviews(id);
 
