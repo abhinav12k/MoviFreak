@@ -9,18 +9,20 @@ It's a movie app that is used to view reviews and trailers of latest and top rat
 
 ## Test it on your device! [Download apk](https://github.com/abhinav78910/MoviFreak/raw/master/app/release/app-release.apk)
 
+# Screenshots
+<img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss1.jpg?raw=true" width="250">|
+<img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss2.jpg?raw=true" width="250">|
+<img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss3.jpg?raw=true" width="250">|
+<img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss4.jpg?raw=true" width="250">|
+
+# Preview
+[Preview](https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/recording.mp4)
+
 # Want to contribute?
 * Fork the repo
 * Make changes/improvement in the forked repo
 * Commit your changes
 * Create a pull request to be merged
-
-# Screenshots
-
-<img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss1.jpg?raw=true" width="250">|
-<img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss2.jpg?raw=true" width="250">|
-<img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss3.jpg?raw=true" width="250">|
-<img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss4.jpg?raw=true" width="250">|
 
 ## Found this project useful? 
 
