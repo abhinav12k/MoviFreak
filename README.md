@@ -15,8 +15,12 @@ It's a movie app that is used to view reviews and trailers of latest and top rat
 <img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss3.jpg?raw=true" width="250">|
 <img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss4.jpg?raw=true" width="250">|
 
-# Preview
-[Preview](https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/recording.mp4)
+# App preview 
+<p align="center">
+<img align="left"  src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/gif1.gif" width="220" height="460"  />
+  <img src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/gif2.gif" width="220" height="460" />
+ <img align="right"  src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/gif3.gif" width="220" height="460"  />
+  </p>
 
 # Want to contribute?
 * Fork the repo
