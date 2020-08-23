@@ -7,6 +7,21 @@ It's a movie app that is used to view reviews and trailers of latest and top rat
 * Easy to use
 * Instant Movie retreival
 
+## Test it on your device! [Download apk](https://github.com/abhinav78910/MoviFreak/raw/master/app/release/app-release.apk)
+
+# Want to contribute?
+* Fork the repo
+* Make changes/improvement in the forked repo
+* Commit your changes
+* Create a pull request to be merged
+
+# Screenshots
+
+<img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss1.jpg?raw=true" width="250">|
+<img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss2.jpg?raw=true" width="250">|
+<img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss3.jpg?raw=true" width="250">|
+<img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss4.jpg?raw=true" width="250">|
+
 ## Found this project useful? 
 
 If you found this project useful, then please consider giving it a :star: on Github and sharing it with your friends via social media.
