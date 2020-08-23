@@ -17,9 +17,9 @@ It's a movie app that is used to view reviews and trailers of latest and top rat
 
 # App preview 
 <p align="center">
-<img align="left"  src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/gif1.gif" width="220" height="460"  />
-  <img src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/gif2.gif" width="220" height="460" />
- <img align="right"  src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/gif3.gif" width="220" height="460"  />
+<img align="left"  src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/gif1.gif" width="250" height="460"  />
+  <img src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/gif2.gif" width="250" height="460" />
+ <img align="right"  src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/gif3.gif" width="250" height="460"  />
   </p>
 
 # Want to contribute?
