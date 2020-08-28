@@ -23,10 +23,7 @@ It's a movie app that is used to view reviews and trailers of latest and top rat
 <img src="https://github.com/abhinav78910/MoviFreak/raw/master/screenshots/ss4.jpg?raw=true" width="250">|
 
 # Want to contribute?
-* Fork the repo
-* Make changes/improvement in the forked repo
-* Commit your changes
-* Create a pull request to be merged
+* See the [Contributer's Guide](https://github.com/abhinav78910/MoviFreak/blob/master/Contributing.md)
 
 ## Found this project useful? 
 
