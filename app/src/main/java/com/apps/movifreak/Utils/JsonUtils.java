@@ -31,7 +31,7 @@ public class JsonUtils {
 
         ArrayList<Movie> movie_results = new ArrayList<>();
 
-        for(int i=0;i<results.length();i++){
+        for (int i = 0; i < results.length(); i++) {
             JSONObject movie = results.getJSONObject(i);
             Movie new_movie = new Movie();
 
@@ -39,8 +39,8 @@ public class JsonUtils {
             new_movie.setId(movie.getLong("id"));
             new_movie.setRating(movie.getInt("vote_average"));
             new_movie.setPopularity(movie.getDouble("popularity"));
-            new_movie.setPoster_path(NetworkUtils.getPosterImageUrl(movie.getString("poster_path"),"w342"));
-            new_movie.setLandscapeImageUrl(NetworkUtils.getLandscapeImageUrl(movie.getString("backdrop_path"),"w780"));
+            new_movie.setPoster_path(NetworkUtils.getPosterImageUrl(movie.getString("poster_path"), "w342"));
+            new_movie.setLandscapeImageUrl(NetworkUtils.getLandscapeImageUrl(movie.getString("backdrop_path"), "w780"));
             new_movie.setVote_count(movie.getLong("vote_count"));
             new_movie.setVideo(movie.getBoolean("video"));
             new_movie.setTitle(movie.getString("title"));
@@ -51,17 +51,18 @@ public class JsonUtils {
 
             ArrayList<Integer> genreIdList = new ArrayList<>();
 //            Log.d(TAG,"genreId Size: "+genreIds.length());
-            for(int j=0;j<genreIds.length();j++){
+            for (int j = 0; j < genreIds.length(); j++) {
                 try {
-                    genreIdList.add(j,genreIds.getInt(j));
-                }catch (Exception e){
+                    genreIdList.add(j, genreIds.getInt(j));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
             new_movie.setGenre_ids(genreIdList);
 
-            movie_results.add(i, new_movie);
+            if (!movie_results.contains(new_movie))
+                movie_results.add(new_movie);
         }
 
         return movie_results;
@@ -76,7 +77,7 @@ public class JsonUtils {
 
         ArrayList<Trailer> trailers = new ArrayList<>();
 
-        for(int i=0;i<resultArray.length();i++){
+        for (int i = 0; i < resultArray.length(); i++) {
 
             JSONObject trailer = resultArray.getJSONObject(i);
 
@@ -87,7 +88,7 @@ public class JsonUtils {
             new_trailer.setName(trailer.getString("name"));
 
 //            Log.d(TAG,new_trailer.toString());
-            trailers.add(i,new_trailer);
+            trailers.add(i, new_trailer);
         }
 
         return trailers;
@@ -104,7 +105,7 @@ public class JsonUtils {
 
         ArrayList<Review> reviews = new ArrayList<>();
 
-        for(int i=0;i<resultArray.length();i++){
+        for (int i = 0; i < resultArray.length(); i++) {
 
             JSONObject review = resultArray.getJSONObject(i);
 
@@ -116,7 +117,7 @@ public class JsonUtils {
             new_review.setUrl(review.getString("url"));
 
 //            Log.d(TAG,new_review.toString());
-            reviews.add(i,new_review);
+            reviews.add(i, new_review);
         }
 
         return reviews;

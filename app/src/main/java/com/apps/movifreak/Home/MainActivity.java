@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,12 +15,9 @@ import android.os.PersistableBundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -47,15 +43,20 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ActionBar actionBar;
 
-    private int pageNo = 1;
     private int activeId;
     private String returnActivity = "";
-    private ArrayList<Movie> totalMovies = new ArrayList<>();
+    private ArrayList<Movie> displayMovieList = new ArrayList<>();
     private MovieAdapter myAdapter = new MovieAdapter(this);
     private String typeOfMovie = "popular";
     private boolean isSearchActive = false;
     private int searchPage = 1;
+    private int popCurrentPage = 1;
+    private int topCurrentPage = 1;
     private String searchedMovie;
+
+    private ArrayList<Movie> popMoviesList = new ArrayList<>();
+    private ArrayList<Movie> topRatedMoviesList = new ArrayList<>();
+    private ArrayList<Movie> searchedMoviesList = new ArrayList<>();
 
     //Widgets
     private BottomNavigationView bottomNavigationView;
@@ -101,22 +102,29 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 isSearchActive = false;
                 mSearchParam.setText("");
-                totalMovies.clear();
-                myAdapter.notifyDataSetChanged();
-                new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", pageNo));
-                Log.d(TAG, "Page no start: " + pageNo);
+                bottomNavigationView.setSelectedItemId(R.id.most_pop);
+
+                if(!popMoviesList.isEmpty()&& popMoviesList.size()!=0){
+                    Log.d(TAG,"Getting movies");
+                    myAdapter.updateMoviesList(popMoviesList);
+                }else {
+                    myAdapter.clearList();
+                    typeOfMovie = "popular";
+                    new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", popCurrentPage));
+                }
                 hideSoftKeyboard();
             }
         });
 
 
         if (savedInstanceState != null && savedInstanceState.containsKey("movies_list")) {
+            Log.d(TAG,"Getting data from savedInstance");
             activeId = savedInstanceState.getInt("type_of_movie");
-            totalMovies = savedInstanceState.getParcelableArrayList("movies_list");
+            displayMovieList = savedInstanceState.getParcelableArrayList("movies_list");
         } else {
+            Log.d(TAG,"Fetching data onStart of app");
             //getting movies list asynchronously
-            new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", pageNo));
-            Log.d(TAG, "Page no start: " + pageNo);
+            new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", popCurrentPage));
         }
 
         //Setting up recycler view
@@ -124,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, 3, RecyclerView.VERTICAL, false);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        myAdapter.addMovies(totalMovies);
+//        myAdapter.updateMoviesList(displayMovieList);
         mRecyclerView.setAdapter(myAdapter);
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -140,9 +148,16 @@ public class MainActivity extends AppCompatActivity {
                         new getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie.trim(), searchPage));
                     } else {
 
-                        pageNo++;
-                        Log.d(TAG, "Page no: " + pageNo);
-                        new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", pageNo));
+                        if(typeOfMovie.equals("popular")){
+                            popCurrentPage++;
+                            Log.d(TAG, "Page no:Pop " + popCurrentPage);
+                            new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", popCurrentPage));
+                        }else{
+                            topCurrentPage++;
+                            Log.d(TAG, "Page no:Top " + topCurrentPage);
+                            new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", topCurrentPage));
+                        }
+
                     }
                 }
 
@@ -157,23 +172,38 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.most_pop:
                         if (!typeOfMovie.equals("popular")) {
-                            pageNo = 1;
-                            totalMovies.clear();
-                            typeOfMovie = "popular";
-                            new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", 1));
-//                            actionBar.setTitle("Pop Movies");
+
                             pageTitle.setText("Pop Movies");
+                            typeOfMovie = "popular";
+                            if (popMoviesList.isEmpty() && popMoviesList.size() == 0) {
+                                popCurrentPage=1;
+                                displayMovieList.clear();
+                                myAdapter.clearList();
+                                new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", 1));
+                            } else {
+
+                                Log.d(TAG,"Getting movies from already fetched list");
+                                myAdapter.updateMoviesList(popMoviesList);
+
+                            }
                         }
                         return true;
 
                     case R.id.top_rated:
                         if (!typeOfMovie.equals("top_rated")) {
-                            pageNo = 1;
-                            totalMovies.clear();
-                            typeOfMovie = "top_rated";
-                            new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", 1));
-//                            actionBar.setTitle("Top Rated Movies");
+
                             pageTitle.setText("Top Rated Movies");
+                            typeOfMovie = "top_rated";
+                            if(topRatedMoviesList.isEmpty()&&topRatedMoviesList.size()==0) {
+                                topCurrentPage=1;
+                                myAdapter.clearList();
+                                new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", 1));
+                            }else{
+
+                                Log.d(TAG,"Getting movies from already fetched list");
+                                myAdapter.updateMoviesList(topRatedMoviesList);
+
+                            }
                         }
                         return true;
 
@@ -236,12 +266,10 @@ public class MainActivity extends AppCompatActivity {
                     //Perform search operation from MoviesDb
                     isSearchActive = true;
                     searchPage = 1;
-                    totalMovies.clear();
-                    myAdapter.notifyDataSetChanged();
+                    myAdapter.clearList();
                     Log.d(TAG, "Search Parameter: " + s.toString());
                     searchedMovie = s.toString().trim();
                     new getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie, searchPage));
-
 
                 }
             }
@@ -271,15 +299,26 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
             if (movies != null && !movies.isEmpty()) {
-                totalMovies.addAll(movies);
-                myAdapter.notifyDataSetChanged();
+
+                if (typeOfMovie.equals("popular")) {
+                    popMoviesList.addAll(movies);
+                    displayMovieList.addAll(movies);
+                } else if (typeOfMovie.equals("top_rated")) {
+                    topRatedMoviesList.addAll(movies);
+                    displayMovieList.addAll(movies);
+                } else {
+                    searchedMoviesList.addAll(movies);
+                    displayMovieList.addAll(movies);
+                }
+
+                myAdapter.addMovies(movies);
             }
         }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        outState.putParcelableArrayList("movies_list", totalMovies);
+        outState.putParcelableArrayList("movies_list", displayMovieList);
         outState.putInt("type_of_movie", bottomNavigationView.getSelectedItemId());
         super.onSaveInstanceState(outState, outPersistentState);
     }

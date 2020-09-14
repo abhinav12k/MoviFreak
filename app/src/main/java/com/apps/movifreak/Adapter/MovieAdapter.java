@@ -32,19 +32,31 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private ArrayList<Movie> movieList = new ArrayList<>();
     private Context mContext;
 
-    public MovieAdapter(Context mContext){
+    public MovieAdapter(Context mContext) {
         this.mContext = mContext;
     }
 
-    public void addMovies(ArrayList<Movie> mList){
-        this.movieList = mList;
+    public void addMovies(ArrayList<Movie> mList) {
+        this.movieList.addAll(mList);
+        notifyDataSetChanged();
+    }
+
+    public void clearList() {
+        this.movieList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void updateMoviesList(ArrayList<Movie> newList) {
+        this.movieList.clear();
+        this.movieList = newList;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public MovieAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View listItem = layoutInflater.inflate(R.layout.single_movie_tile,parent,false);
+        View listItem = layoutInflater.inflate(R.layout.single_movie_tile, parent, false);
         return new MovieAdapter.ViewHolder(listItem);
     }
 
@@ -72,7 +84,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
                             @Override
                             public void onError() {
-                                Log.d(TAG,"Error in loading images");
+                                Log.d(TAG, "Error in loading images");
                             }
                         });
             }
@@ -85,9 +97,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 Movie currentMovie = movieList.get(position);
                 Intent DetailIntent = new Intent(mContext, DetailActivity.class);
                 Bundle b = new Bundle();
-                b.putParcelable("movie_details",currentMovie);
-                DetailIntent.putExtra("movie_bundle",b);
-                DetailIntent.putExtra("movie_details","from Main Activity");
+                b.putParcelable("movie_details", currentMovie);
+                DetailIntent.putExtra("movie_bundle", b);
+                DetailIntent.putExtra("movie_details", "from Main Activity");
                 mContext.startActivity(DetailIntent);
 
             }
@@ -100,7 +112,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movieList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView movie_tile;
         public ProgressBar mProgressBar;

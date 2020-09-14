@@ -37,12 +37,20 @@ public class NetworkUtils {
         //typeOfMovie - latest/top_rated/popular
 
         String searchBaseUrl = MOVIES_DB_BASE_URL + "/" + typeOfMovie;
+        Uri builtUri;
+        if(searchLanguage.equals("")){
+            builtUri = Uri.parse(searchBaseUrl).buildUpon()
+                    .appendQueryParameter(API_KEY, api_key)
+                    .appendQueryParameter(PAGE_NO, String.valueOf(pageNumber))
+                    .build();
+        }else {
 
-        Uri builtUri = Uri.parse(searchBaseUrl).buildUpon()
-                .appendQueryParameter(API_KEY, api_key)
-                .appendQueryParameter(SEARCH_RESULT_LANG, searchLanguage)
-                .appendQueryParameter(PAGE_NO, String.valueOf(pageNumber))
-                .build();
+            builtUri = Uri.parse(searchBaseUrl).buildUpon()
+                    .appendQueryParameter(API_KEY, api_key)
+                    .appendQueryParameter(SEARCH_RESULT_LANG, searchLanguage)
+                    .appendQueryParameter(PAGE_NO, String.valueOf(pageNumber))
+                    .build();
+        }
 
         URL url = null;
 
