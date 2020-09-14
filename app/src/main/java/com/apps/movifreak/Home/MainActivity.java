@@ -8,15 +8,24 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.apps.movifreak.Adapter.MovieAdapter;
 import com.apps.movifreak.Model.Movie;
@@ -44,9 +53,17 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Movie> totalMovies = new ArrayList<>();
     private MovieAdapter myAdapter = new MovieAdapter(this);
     private String typeOfMovie = "popular";
+    private boolean isSearchActive = false;
+    private int searchPage = 1;
+    private String searchedMovie;
 
-    //Bottom navigation view
+    //Widgets
     private BottomNavigationView bottomNavigationView;
+    private Toolbar main_toolbar;
+    private TextView pageTitle;
+    private ImageView searchIcon;
+    private RelativeLayout backArrow;
+    private EditText mSearchParam;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,15 +71,44 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //setting up toolbar
-        Toolbar main_toolbar = findViewById(R.id.main_toolbar);
+        main_toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(main_toolbar);
-        main_toolbar.setTitleTextColor(getResources().getColor(R.color.colorRed));
+//        main_toolbar.setTitleTextColor(getResources().getColor(R.color.colorRed));
 
         //bottom navigation view
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
 
         actionBar = getSupportActionBar();
-        actionBar.setTitle("Pop Movies");
+//        actionBar.setTitle("Pop Movies");
+
+        //Widgets
+        pageTitle = findViewById(R.id.page_title);
+        searchIcon = findViewById(R.id.ic_search);
+        mSearchParam = findViewById(R.id.search);
+        backArrow = findViewById(R.id.ivBackArrow);
+
+        pageTitle.setText("Pop Movies");
+
+        searchIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initSearchTextListener();
+            }
+        });
+
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isSearchActive = false;
+                mSearchParam.setText("");
+                totalMovies.clear();
+                myAdapter.notifyDataSetChanged();
+                new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", pageNo));
+                Log.d(TAG, "Page no start: " + pageNo);
+                hideSoftKeyboard();
+            }
+        });
+
 
         if (savedInstanceState != null && savedInstanceState.containsKey("movies_list")) {
             activeId = savedInstanceState.getInt("type_of_movie");
@@ -87,10 +133,17 @@ public class MainActivity extends AppCompatActivity {
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if (!recyclerView.canScrollVertically(1)) {
-                    pageNo++;
-                    Log.d(TAG, "Page no: " + pageNo);
-                    new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", pageNo));
 
+                    if (isSearchActive) {
+                        searchPage++;
+                        Log.d(TAG, "Search Page no: " + searchPage);
+                        new getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie.trim(), searchPage));
+                    } else {
+
+                        pageNo++;
+                        Log.d(TAG, "Page no: " + pageNo);
+                        new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", pageNo));
+                    }
                 }
 
             }
@@ -108,8 +161,8 @@ public class MainActivity extends AppCompatActivity {
                             totalMovies.clear();
                             typeOfMovie = "popular";
                             new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", 1));
-                            actionBar.setTitle("Pop Movies");
-
+//                            actionBar.setTitle("Pop Movies");
+                            pageTitle.setText("Pop Movies");
                         }
                         return true;
 
@@ -119,8 +172,8 @@ public class MainActivity extends AppCompatActivity {
                             totalMovies.clear();
                             typeOfMovie = "top_rated";
                             new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "en-US", 1));
-                            actionBar.setTitle("Top Rated Movies");
-
+//                            actionBar.setTitle("Top Rated Movies");
+                            pageTitle.setText("Top Rated Movies");
                         }
                         return true;
 
@@ -138,6 +191,63 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void hideSoftKeyboard() {
+        pageTitle.setVisibility(View.VISIBLE);
+        backArrow.setVisibility(View.GONE);
+        mSearchParam.setVisibility(View.GONE);
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(main_toolbar.getApplicationWindowToken(), 0);
+    }
+
+    private void initSearchTextListener() {
+
+        pageTitle.setVisibility(View.GONE);
+        backArrow.setVisibility(View.VISIBLE);
+        mSearchParam.setVisibility(View.VISIBLE);
+        mSearchParam.setHint("Search...");
+        mSearchParam.requestFocus();
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInputFromWindow(
+                main_toolbar.getApplicationWindowToken(),
+                InputMethodManager.SHOW_FORCED, 0);
+
+        performSearch();
+
+    }
+
+    private void performSearch() {
+
+        mSearchParam.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0 && s.toString().trim() != "") {
+                    //Perform search operation from MoviesDb
+                    isSearchActive = true;
+                    searchPage = 1;
+                    totalMovies.clear();
+                    myAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "Search Parameter: " + s.toString());
+                    searchedMovie = s.toString().trim();
+                    new getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie, searchPage));
+
+
+                }
+            }
+        });
+
+    }
 
     private class getMoviesTask extends AsyncTask<URL, Void, ArrayList<Movie>> {
 

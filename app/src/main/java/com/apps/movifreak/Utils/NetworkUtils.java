@@ -24,16 +24,24 @@ public class NetworkUtils {
 
     private final static String PAGE_NO = "page";
 
+    private final static String QUERY_PARAMETER = "query";
+
+    private final static String INCLUDE_ADULT = "include_adult";
+
+    private final static String REGION = "region";
+
+    private final static String YEAR = "year";
+
     //for getting url ready for main grid layout
-    public static URL buildUrlForGrid(String typeOfMovie,String api_key,String searchLanguage,long pageNumber) {
+    public static URL buildUrlForGrid(String typeOfMovie, String api_key, String searchLanguage, long pageNumber) {
         //typeOfMovie - latest/top_rated/popular
 
-        String searchBaseUrl = MOVIES_DB_BASE_URL+"/"+typeOfMovie;
+        String searchBaseUrl = MOVIES_DB_BASE_URL + "/" + typeOfMovie;
 
         Uri builtUri = Uri.parse(searchBaseUrl).buildUpon()
-                .appendQueryParameter(API_KEY,api_key)
-                .appendQueryParameter(SEARCH_RESULT_LANG,searchLanguage)
-                .appendQueryParameter(PAGE_NO,String.valueOf(pageNumber))
+                .appendQueryParameter(API_KEY, api_key)
+                .appendQueryParameter(SEARCH_RESULT_LANG, searchLanguage)
+                .appendQueryParameter(PAGE_NO, String.valueOf(pageNumber))
                 .build();
 
         URL url = null;
@@ -49,20 +57,42 @@ public class NetworkUtils {
     }
 
     //for getting url ready for trailers/reviews/images
-    public static URL buildUrlForDetailActivity(long Id,String type,String api_key){
+    public static URL buildUrlForDetailActivity(long Id, String type, String api_key) {
         //type - videos/reviews
 
-        String searchUrl = MOVIES_DB_BASE_URL+"/"+Id+"/"+type;
+        String searchUrl = MOVIES_DB_BASE_URL + "/" + Id + "/" + type;
 
         Uri buildUri = Uri.parse(searchUrl).buildUpon()
-                .appendQueryParameter(API_KEY,api_key)
+                .appendQueryParameter(API_KEY, api_key)
                 .build();
 
         URL url = null;
 
-        try{
+        try {
             url = new URL(buildUri.toString());
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    //for getting url ready for searching movie
+    public static URL buildUrlForSearch(String api_key, String query, long pageNumber) {
+        String searchUrl = "https://api.themoviedb.org/3/search/movie";
+
+        //normal search without filters - only parameter search
+        Uri buildUri = Uri.parse(searchUrl).buildUpon()
+                .appendQueryParameter(API_KEY, api_key)
+                .appendQueryParameter(QUERY_PARAMETER, query)
+                .appendQueryParameter(PAGE_NO, String.valueOf(pageNumber))
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(buildUri.toString());
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -72,7 +102,7 @@ public class NetworkUtils {
     //for getting json response
     public static String getResponseFromUrl(URL url) throws IOException {
 
-        HttpURLConnection urlConnection =(HttpURLConnection) url.openConnection();
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream in = urlConnection.getInputStream();
 
@@ -91,21 +121,21 @@ public class NetworkUtils {
     }
 
     //for getting poster image url
-    public static String getPosterImageUrl(String poster_path,String sizeOfImage){
+    public static String getPosterImageUrl(String poster_path, String sizeOfImage) {
 
         //w185 for thumbnail size poster image
-        String BASE_IMAGE_URL ="https://image.tmdb.org/t/p/"+sizeOfImage+"/";
-        String imageUrl = BASE_IMAGE_URL+poster_path;
+        String BASE_IMAGE_URL = "https://image.tmdb.org/t/p/" + sizeOfImage + "/";
+        String imageUrl = BASE_IMAGE_URL + poster_path;
         return imageUrl;
 
     }
 
     //for getting poster for detail activity
-    public static String getLandscapeImageUrl(String backdrop_path,String sizeOfImage){
+    public static String getLandscapeImageUrl(String backdrop_path, String sizeOfImage) {
 
         //w780 for landscape size image
-        String BASE_IMAGE_URL ="https://image.tmdb.org/t/p/"+sizeOfImage+"/";
-        String imageUrl = BASE_IMAGE_URL+backdrop_path;
+        String BASE_IMAGE_URL = "https://image.tmdb.org/t/p/" + sizeOfImage + "/";
+        String imageUrl = BASE_IMAGE_URL + backdrop_path;
         return imageUrl;
 
     }
