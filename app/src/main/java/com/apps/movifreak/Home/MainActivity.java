@@ -2,8 +2,11 @@ package com.apps.movifreak.Home;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.apps.movifreak.Adapter.MovieAdapter;
 import com.apps.movifreak.Model.Movie;
@@ -29,6 +34,7 @@ import com.apps.movifreak.R;
 import com.apps.movifreak.Utils.JsonUtils;
 import com.apps.movifreak.Utils.NetworkUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONException;
 
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private int popCurrentPage = 1;
     private int topCurrentPage = 1;
     private String searchedMovie;
+    private boolean doubleBackToExitPressedOnce = false;
 
     private ArrayList<Movie> popMoviesList = new ArrayList<>();
     private ArrayList<Movie> topRatedMoviesList = new ArrayList<>();
@@ -65,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView searchIcon;
     private RelativeLayout backArrow;
     private EditText mSearchParam;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +95,37 @@ public class MainActivity extends AppCompatActivity {
         searchIcon = findViewById(R.id.ic_search);
         mSearchParam = findViewById(R.id.search);
         backArrow = findViewById(R.id.ivBackArrow);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_movies);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+
+                    case R.id.nav_movies:
+                        Toast.makeText(getApplicationContext(), "Movies Clicked", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.nav_tv:
+                        Toast.makeText(getApplicationContext(), "Tv Clicked", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.nav_github:
+                        Toast.makeText(getApplicationContext(), "Navigating to github", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.nav_linkedin:
+                        Toast.makeText(getApplicationContext(), "Navigating to linkedin", Toast.LENGTH_SHORT).show();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, main_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
         pageTitle.setText("Pop Movies");
 
@@ -104,10 +143,10 @@ public class MainActivity extends AppCompatActivity {
                 mSearchParam.setText("");
                 bottomNavigationView.setSelectedItemId(R.id.most_pop);
 
-                if(!popMoviesList.isEmpty()&& popMoviesList.size()!=0){
-                    Log.d(TAG,"Getting movies");
+                if (!popMoviesList.isEmpty() && popMoviesList.size() != 0) {
+                    Log.d(TAG, "Getting movies");
                     myAdapter.updateMoviesList(popMoviesList);
-                }else {
+                } else {
                     myAdapter.clearList();
                     typeOfMovie = "popular";
                     new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", popCurrentPage));
@@ -118,11 +157,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (savedInstanceState != null && savedInstanceState.containsKey("movies_list")) {
-            Log.d(TAG,"Getting data from savedInstance");
+            Log.d(TAG, "Getting data from savedInstance");
             activeId = savedInstanceState.getInt("type_of_movie");
             displayMovieList = savedInstanceState.getParcelableArrayList("movies_list");
         } else {
-            Log.d(TAG,"Fetching data onStart of app");
+            Log.d(TAG, "Fetching data onStart of app");
             //getting movies list asynchronously
             new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", popCurrentPage));
         }
@@ -148,11 +187,11 @@ public class MainActivity extends AppCompatActivity {
                         new getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie.trim(), searchPage));
                     } else {
 
-                        if(typeOfMovie.equals("popular")){
+                        if (typeOfMovie.equals("popular")) {
                             popCurrentPage++;
                             Log.d(TAG, "Page no:Pop " + popCurrentPage);
                             new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", popCurrentPage));
-                        }else{
+                        } else {
                             topCurrentPage++;
                             Log.d(TAG, "Page no:Top " + topCurrentPage);
                             new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", topCurrentPage));
@@ -176,13 +215,13 @@ public class MainActivity extends AppCompatActivity {
                             pageTitle.setText("Pop Movies");
                             typeOfMovie = "popular";
                             if (popMoviesList.isEmpty() && popMoviesList.size() == 0) {
-                                popCurrentPage=1;
+                                popCurrentPage = 1;
                                 displayMovieList.clear();
                                 myAdapter.clearList();
                                 new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", 1));
                             } else {
 
-                                Log.d(TAG,"Getting movies from already fetched list");
+                                Log.d(TAG, "Getting movies from already fetched list");
                                 myAdapter.updateMoviesList(popMoviesList);
 
                             }
@@ -194,13 +233,13 @@ public class MainActivity extends AppCompatActivity {
 
                             pageTitle.setText("Top Rated Movies");
                             typeOfMovie = "top_rated";
-                            if(topRatedMoviesList.isEmpty()&&topRatedMoviesList.size()==0) {
-                                topCurrentPage=1;
+                            if (topRatedMoviesList.isEmpty() && topRatedMoviesList.size() == 0) {
+                                topCurrentPage = 1;
                                 myAdapter.clearList();
                                 new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", 1));
-                            }else{
+                            } else {
 
-                                Log.d(TAG,"Getting movies from already fetched list");
+                                Log.d(TAG, "Getting movies from already fetched list");
                                 myAdapter.updateMoviesList(topRatedMoviesList);
 
                             }
@@ -219,6 +258,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+            } else {
+
+                this.doubleBackToExitPressedOnce = true;
+                Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
+            }
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 3000);
+        }
     }
 
     private void hideSoftKeyboard() {
