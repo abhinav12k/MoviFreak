@@ -16,7 +16,10 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     //base url for movies
-    private final static String MOVIES_DB_BASE_URL = "https://api.themoviedb.org/3/movie";
+    private final static String BASE_URL_MOVIES = "https://api.themoviedb.org/3/movie";
+
+    //base url for tv shows
+    private final static String BASE_URL_TV = "https://api.themoviedb.org/3/tv";
 
     private final static String SEARCH_RESULT_LANG = "language";
 
@@ -32,11 +35,11 @@ public class NetworkUtils {
 
     private final static String YEAR = "year";
 
-    //for getting url ready for main grid layout
-    public static URL buildUrlForGrid(String typeOfMovie, String api_key, String searchLanguage, long pageNumber) {
+    //for getting url ready for main grid movies
+    public static URL buildUrlForMovies(String typeOfMovie, String api_key, String searchLanguage, long pageNumber) {
         //typeOfMovie - latest/top_rated/popular
 
-        String searchBaseUrl = MOVIES_DB_BASE_URL + "/" + typeOfMovie;
+        String searchBaseUrl = BASE_URL_MOVIES + "/" + typeOfMovie;
         Uri builtUri;
         if(searchLanguage.equals("")){
             builtUri = Uri.parse(searchBaseUrl).buildUpon()
@@ -68,7 +71,7 @@ public class NetworkUtils {
     public static URL buildUrlForDetailActivity(long Id, String type, String api_key) {
         //type - videos/reviews
 
-        String searchUrl = MOVIES_DB_BASE_URL + "/" + Id + "/" + type;
+        String searchUrl = BASE_URL_MOVIES + "/" + Id + "/" + type;
 
         Uri buildUri = Uri.parse(searchUrl).buildUpon()
                 .appendQueryParameter(API_KEY, api_key)
@@ -105,6 +108,38 @@ public class NetworkUtils {
         }
 
         return url;
+    }
+
+    //for generating url for tvShows
+    public static URL buildUrlForTV(String typeOfTvShow, String api_key, String searchLanguage, long pageNumber){
+        //typeOfTvShow - latest/top_rated/popular
+
+        String searchBaseUrl = BASE_URL_MOVIES + "/" + typeOfTvShow;
+        Uri builtUri;
+        if(searchLanguage.equals("")){
+            builtUri = Uri.parse(searchBaseUrl).buildUpon()
+                    .appendQueryParameter(API_KEY, api_key)
+                    .appendQueryParameter(PAGE_NO, String.valueOf(pageNumber))
+                    .build();
+        }else {
+
+            builtUri = Uri.parse(searchBaseUrl).buildUpon()
+                    .appendQueryParameter(API_KEY, api_key)
+                    .appendQueryParameter(SEARCH_RESULT_LANG, searchLanguage)
+                    .appendQueryParameter(PAGE_NO, String.valueOf(pageNumber))
+                    .build();
+        }
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+
     }
 
     //for getting json response

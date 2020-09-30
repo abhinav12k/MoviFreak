@@ -6,18 +6,22 @@ import java.util.*
  * Created by abhinav on 23/9/20.
  */
 
-data class TvShow(
-        val genre_ids: ArrayList<Int>,
-        val title: String,
-        val original_title: String,
-        val popularity: Float,
-        val vote_count: Long,
-        val first_air_date: String,
-        val backdrop_path: String,
-        val original_language: String,
-        val id: Long,
-        val vote_average: Float,
-        val overview: String,
-        val poster_path: String,
-        val landscapeImageUrl: String
-)
+class TvShow(
+        var genre_ids: ArrayList<Int>,
+        var title: String,
+        var original_name: String,
+        var popularity: Double,
+        var vote_count: Long,
+        var first_air_date: String,
+        var backdrop_path: String,
+        var original_language: String,
+        var id: Long,
+        var vote_average: Float,
+        var overview: String,
+        var poster_path: String,
+        var landscapeImageUrl: String
+) {
+    constructor() : this(ArrayList<Int>(),"","",0.0,0,"","",
+    "",0,0f,"","","")
+
+}

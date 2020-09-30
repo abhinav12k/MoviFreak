@@ -10,10 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -76,7 +73,7 @@ class MovieFragment : Fragment() {
         } else {
             Log.d(TAG, "Fetching data onStart of app")
             //getting movies list asynchronously
-            getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", popCurrentPage.toLong()))
+            getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", popCurrentPage.toLong()))
         }
 
         val gridLayoutManager = GridLayoutManager(mContext, 3, RecyclerView.VERTICAL, false)
@@ -98,11 +95,11 @@ class MovieFragment : Fragment() {
                         if (typeOfMovie == "popular") {
                             popCurrentPage++
                             Log.d(TAG, "Page no:Pop $popCurrentPage")
-                            getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", popCurrentPage.toLong()))
+                            getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", popCurrentPage.toLong()))
                         } else {
                             topCurrentPage++
                             Log.d(TAG, "Page no:Top $topCurrentPage")
-                            getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", topCurrentPage.toLong()))
+                            getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", topCurrentPage.toLong()))
                         }
                     }
                 }
@@ -119,14 +116,14 @@ class MovieFragment : Fragment() {
                         if (popMoviesList.isEmpty() && popMoviesList.size == 0) {
                             popCurrentPage = 1
                             myAdapter.clearList()
-                            getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", 1))
+                            getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", 1))
                         } else {
 
                             if (popMoviesList.size > 120) {
                                 Log.d(TAG, "PopMovieListSize - " + popMoviesList.size + " Excess data emptying list")
                                 popCurrentPage = 1
                                 myAdapter.clearList()
-                                getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", 1))
+                                getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", 1))
                             } else {
 
                                 Log.d(TAG, "Getting movies from already fetched list")
@@ -144,14 +141,14 @@ class MovieFragment : Fragment() {
                         if (topRatedMoviesList.isEmpty() && topRatedMoviesList.size == 0) {
                             topCurrentPage = 1
                             myAdapter.clearList()
-                            getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", 1))
+                            getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", 1))
                         } else {
 
                             if (topRatedMoviesList.size > 120) {
                                 Log.d(TAG, "TopRatedListSize - " + topRatedMoviesList.size + " Excess data emptying list")
                                 topCurrentPage = 1
                                 myAdapter.clearList()
-                                getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", 1))
+                                getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", 1))
                             } else {
 
                                 Log.d(TAG, "Getting movies from already fetched list")
@@ -234,7 +231,7 @@ class MovieFragment : Fragment() {
                 myAdapter.updateMoviesList(popMoviesList)
             } else {
                 Log.d(TAG, "Page no:Pop $popCurrentPage")
-                getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", popCurrentPage.toLong()))
+                getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", popCurrentPage.toLong()))
             }
         } else {
 
@@ -243,7 +240,7 @@ class MovieFragment : Fragment() {
             } else {
 
                 Log.d(TAG, "Page no:Top $topCurrentPage")
-                getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", topCurrentPage.toLong()))
+                getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", topCurrentPage.toLong()))
             }
         }
 
