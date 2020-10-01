@@ -5,6 +5,7 @@
         android:title="Most Popular"
         android:orderInCategory="0"
         android:icon="@drawable/ic_popularity"/>
+
     <item android:id="@+id/top_rated"
         android:title="Top Rated"
         android:orderInCategory="1"

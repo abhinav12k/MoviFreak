@@ -1,29 +1,23 @@
 package com.apps.movifreak.Home;
 
-import androidx.annotation.NonNull;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.view.MenuItem;
-
 import com.apps.movifreak.Adapter.FavAdapter;
-import com.apps.movifreak.Adapter.MovieAdapter;
 import com.apps.movifreak.Database.AppDatabase;
 import com.apps.movifreak.Database.FavMovie;
 import com.apps.movifreak.R;
-import com.apps.movifreak.Utils.AppExecutors;
-import com.apps.movifreak.Utils.NetworkUtils;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class favActivity extends AppCompatActivity {
@@ -47,6 +41,9 @@ public class favActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Favorite Movies");
+        final Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_backarrow);
+        upArrow.setColorFilter(ContextCompat.getColor(this, R.color.colorText), PorterDuff.Mode.SRC_ATOP);
+        actionBar.setHomeAsUpIndicator(upArrow);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         //Setting up recycler view

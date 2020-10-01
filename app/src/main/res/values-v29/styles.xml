@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:forceDarkAllowed">false</item>
         <item name="android:textColorSecondary">@color/colorText</item>
     </style>
 
@@ -49,5 +50,4 @@
         <!-- Background color when SELECTED -->
         <item name="colorControlHighlight">@color/colorText</item>
     </style>
-
 </resources>
