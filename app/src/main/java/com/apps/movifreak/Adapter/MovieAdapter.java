@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -90,6 +91,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             }
         });
 
+        final String movieRating = String.valueOf(movieList.get(position).getRating());
+        final String movieYear = movieList.get(position).getRelease_date().substring(0,4);
+
+        holder.movie_rating.setText(movieRating);
+        holder.movie_year.setText(movieYear);
+
+
         holder.movie_tile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,12 +123,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView movie_tile;
+        public TextView movie_rating, movie_year;
         public ProgressBar mProgressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             movie_tile = itemView.findViewById(R.id.movie_thumbnail);
+            movie_rating = itemView.findViewById(R.id.tv_rating);
+            movie_year = itemView.findViewById(R.id.tv_rating_year);
             mProgressBar = itemView.findViewById(R.id.progress_bar);
 
         }
