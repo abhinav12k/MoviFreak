@@ -147,7 +147,7 @@ public class JsonUtils {
             tvShow.setPoster_path(NetworkUtils.getPosterImageUrl(tvShowJSON.getString("poster_path"), "w342"));
             tvShow.setLandscapeImageUrl(NetworkUtils.getLandscapeImageUrl(tvShowJSON.getString("backdrop_path"), "w780"));
             tvShow.setVote_count(tvShowJSON.getLong("vote_count"));
-            tvShow.setTitle(tvShowJSON.getString("title"));
+            tvShow.setTitle(tvShowJSON.getString("name"));
             tvShow.setOverview(tvShowJSON.getString("overview"));
             tvShow.setFirst_air_date(tvShowJSON.getString("first_air_date"));
 

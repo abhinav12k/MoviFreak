@@ -63,7 +63,7 @@ class MovieFragment : Fragment() {
 
         myAdapter = MovieAdapter(mContext)
 //        pageTitle.text = "Pop Movies"
-        Log.d(TAG, "OnActivityCreated!!!!!!!!!!!!!!!!!!")
+//        Log.d(TAG, "OnActivityCreated!!!!!!!!!!!!!!!!!!")
 
         if (savedInstanceState != null && savedInstanceState.containsKey("movies_list")) {
             Log.d(TAG, "Getting data from savedInstance")

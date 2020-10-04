@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         final MovieFragment movieFragment = new MovieFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, movieFragment).commit();
 
- SwitchCompat drawerSwitch = (SwitchCompat) navigationView.getMenu().findItem(R.id.switch_item).getActionView();
+        SwitchCompat drawerSwitch = (SwitchCompat) navigationView.getMenu().findItem(R.id.switch_item).getActionView();
         // Saving state of our app
         // using SharedPreferences
         SharedPreferences sharedPreferences
@@ -151,11 +151,11 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.nav_movies:
                         Toast.makeText(getApplicationContext(), "Movies Clicked", Toast.LENGTH_SHORT).show();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, movieFragment).commit();
                         return true;
                     case R.id.nav_tv:
                         Toast.makeText(getApplicationContext(), "Tv Clicked", Toast.LENGTH_SHORT).show();
-                        //TODO:Navigate to TvShows
-                        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, movieFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new TvShowFragment()).commit();
                         return true;
                     case R.id.nav_github:
                         Toast.makeText(getApplicationContext(), "Navigating to github", Toast.LENGTH_SHORT).show();

@@ -114,7 +114,7 @@ public class NetworkUtils {
     public static URL buildUrlForTV(String typeOfTvShow, String api_key, String searchLanguage, long pageNumber){
         //typeOfTvShow - latest/top_rated/popular
 
-        String searchBaseUrl = BASE_URL_MOVIES + "/" + typeOfTvShow;
+        String searchBaseUrl = BASE_URL_TV + "/" + typeOfTvShow;
         Uri builtUri;
         if(searchLanguage.equals("")){
             builtUri = Uri.parse(searchBaseUrl).buildUpon()
