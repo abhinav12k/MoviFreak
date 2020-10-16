@@ -11,7 +11,7 @@ Please note we have a code of conduct, please follow it in all your interactions
 * If you would like to work on an issue, drop in a comment at the issue. If it is already assigned to someone, but there is no sign of any work being done, please free to drop in a comment so that the issue can be assigned to you if the previous assignee has dropped it entirely.
 
 ## Which Branch to use
-* Currently development is taking place on the feature branch to make pull request for the development branch.
+* Currently development is taking place on the feature branch so use feature branch for latest features and make pull request for the feature branch.
 
 ## Raise an Issue
 
