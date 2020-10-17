@@ -5,6 +5,7 @@ import android.util.Log;
 import com.apps.movifreak.Model.Movie;
 import com.apps.movifreak.Model.Review;
 import com.apps.movifreak.Model.Trailer;
+import com.apps.movifreak.Model.TvShow;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -121,6 +122,55 @@ public class JsonUtils {
         }
 
         return reviews;
+    }
+
+    public static ArrayList<TvShow> parseTvShowJsonArray(String json) throws JSONException{
+
+        JSONObject searchResult = new JSONObject(json);
+
+        int pageNo = searchResult.getInt("page");
+        long total_results = searchResult.getLong("total_results");
+        long total_pages = searchResult.getLong("total_pages");
+
+        JSONArray results = searchResult.getJSONArray("results");
+
+        ArrayList<TvShow> tv_results = new ArrayList<>();
+
+        for (int i = 0; i < results.length(); i++) {
+            JSONObject tvShowJSON = results.getJSONObject(i);
+            TvShow tvShow = new TvShow();
+
+            tvShow.setOriginal_name(tvShowJSON.getString("original_name"));
+            tvShow.setId(tvShowJSON.getLong("id"));
+            tvShow.setVote_average(tvShowJSON.getInt("vote_average"));
+            tvShow.setPopularity(tvShowJSON.getDouble("popularity"));
+            tvShow.setPoster_path(NetworkUtils.getPosterImageUrl(tvShowJSON.getString("poster_path"), "w342"));
+            tvShow.setLandscapeImageUrl(NetworkUtils.getLandscapeImageUrl(tvShowJSON.getString("backdrop_path"), "w780"));
+            tvShow.setVote_count(tvShowJSON.getLong("vote_count"));
+            tvShow.setTitle(tvShowJSON.getString("name"));
+            tvShow.setOverview(tvShowJSON.getString("overview"));
+            tvShow.setFirst_air_date(tvShowJSON.getString("first_air_date"));
+
+            JSONArray genreIds = tvShowJSON.getJSONArray("genre_ids");
+
+            ArrayList<Integer> genreIdList = new ArrayList<>();
+//            Log.d(TAG,"genreId Size: "+genreIds.length());
+            for (int j = 0; j < genreIds.length(); j++) {
+                try {
+                    genreIdList.add(j, genreIds.getInt(j));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            tvShow.setGenre_ids(genreIdList);
+
+            if (!tv_results.contains(tvShow))
+                tv_results.add(tvShow);
+        }
+
+        return tv_results;
+
     }
 
 }

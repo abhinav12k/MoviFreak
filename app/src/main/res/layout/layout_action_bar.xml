@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/searchLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="5dp"
+    android:background="@color/colorPrimary"
+    android:orientation="horizontal">
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/page_title"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:layout_gravity="center"-->
+    <!--            android:gravity="center_vertical"-->
+    <!--            android:padding="2dp"-->
+    <!--            android:text="Pop Movies"-->
+    <!--            android:textSize="20dp" />-->
+
+    <RelativeLayout
+        android:id="@+id/ivBackArrow"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:tint="@color/colorText"
+            app:srcCompat="@drawable/ic_backarrow" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/search"
+        android:layout_width="280dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="25dp"
+        android:background="@null"
+        android:hint="Search..."
+        android:inputType="text"
+        android:maxLines="1"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorText"
+        android:textCursorDrawable="@null"
+        android:textSize="16sp"
+        android:visibility="visible" />
+    <!--ADDED SPACER VIEW-->
+    <!--        <View-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="0dp"-->
+    <!--            android:layout_weight="1" />-->
+
+    <!--        <ImageView-->
+    <!--            android:id="@+id/ic_search"-->
+    <!--            android:layout_width="30dp"-->
+    <!--            android:layout_height="30dp"-->
+    <!--            android:layout_gravity="center_vertical"-->
+    <!--            android:background="?attr/selectableItemBackgroundBorderless"-->
+    <!--            android:padding="5dp"-->
+    <!--            app:srcCompat="@drawable/ic_search" />-->
+</LinearLayout>

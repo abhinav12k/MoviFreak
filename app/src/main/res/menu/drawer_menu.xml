@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_section"
+            android:title="Section"
+            >
+
+            <menu>
+                <item
+                    android:id="@+id/nav_movies"
+                    android:icon="@drawable/ic_movie"
+                    android:title="Movies" />
+
+                <item
+                    android:id="@+id/nav_tv"
+                    android:icon="@drawable/ic_tv"
+                    android:title="Tv Shows" />
+
+            </menu>
+
+        </item>
+
+        <item
+            android:id="@+id/nav_getInTouch"
+            android:title="Get In Touch"
+            >
+
+            <menu>
+                <item
+                    android:id="@+id/nav_github"
+                    android:icon="@drawable/ic_github"
+                    android:title="Github" />
+
+                <item
+                    android:id="@+id/nav_linkedin"
+                    android:icon="@drawable/ic_linkedin"
+                    android:title="LinkedIn" />
+
+            </menu>
+
+        </item>
+
+
+    </group>
+    <item android:title="Dark Mode">
+        <menu>
+            <item
+                android:id="@+id/switch_item"
+                android:icon="@drawable/ic_night_mode"
+                app:actionLayout="@layout/mode_selector_layout"
+                android:title="Dark Mode" />
+        </menu>
+    </item>
+
+</menu>
+

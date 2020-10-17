@@ -4,21 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.LiveData;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +24,7 @@ import com.apps.movifreak.Database.FavMovie;
 import com.apps.movifreak.Model.Movie;
 import com.apps.movifreak.Model.Review;
 import com.apps.movifreak.Model.Trailer;
+import com.apps.movifreak.Model.TvShow;
 import com.apps.movifreak.R;
 import com.apps.movifreak.Utils.AppExecutors;
 import com.apps.movifreak.Utils.JsonUtils;
@@ -64,8 +60,15 @@ public class DetailActivity extends AppCompatActivity {
     private Movie clickedMovie;
     private FavMovie clickedFavMovie;
 
+    //getting TvShow
+    private TvShow clickedTvShow;
+//    private FavTvShow clickedFavTvShow;
+
+    //Whether TvShow or Movie
+    private String movieOrTvShow;
+
     //Movie Details
-    private String title,synopsis,releaseDate,rating,lang,movie_url,poster_path;
+    private String title,synopsis,releaseDate,rating,lang, top_background,poster_path;
     private long id;
 
     private static final String TAG = DetailActivity.class.getSimpleName();
@@ -95,6 +98,7 @@ public class DetailActivity extends AppCompatActivity {
         //getting intent from main activity
         Intent incomingIntent = getIntent();
         if(incomingIntent.hasExtra("movie_details")) {
+            movieOrTvShow = "movie";
             Bundle bundle = incomingIntent.getBundleExtra("movie_bundle");
             clickedMovie = bundle.getParcelable("movie_details");
 
@@ -107,8 +111,29 @@ public class DetailActivity extends AppCompatActivity {
             rating = String.valueOf(clickedMovie.getRating());
             lang = clickedMovie.getOriginal_language();
             id = clickedMovie.getId();
-            movie_url = clickedMovie.getLandscapeImageUrl();
+            top_background = clickedMovie.getLandscapeImageUrl();
             poster_path = clickedMovie.getPoster_path();
+
+            if(lang==null){
+                lang = "en";
+            }
+
+        }else if(incomingIntent.hasExtra("tvShow_details")){
+            //from tvShow fragment
+            movieOrTvShow = "tvShow";
+            Bundle bundle = incomingIntent.getBundleExtra("tvShow_bundle");
+            clickedTvShow = bundle.getParcelable("tvShow_details");
+
+            Log.d(TAG,clickedTvShow.toString());
+
+            //TvShow Details
+            title = clickedTvShow.getTitle();
+            synopsis = clickedTvShow.getOverview();
+            releaseDate = clickedTvShow.getFirst_air_date();
+            rating = String.valueOf(clickedTvShow.getVote_average());
+            id = clickedTvShow.getId();
+            top_background = clickedTvShow.getLandscapeImageUrl();
+            poster_path = clickedTvShow.getPoster_path();
 
             if(lang==null){
                 lang = "en";
@@ -129,7 +154,7 @@ public class DetailActivity extends AppCompatActivity {
                 rating = String.valueOf(clickedFavMovie.getVote_average());
                 lang = clickedFavMovie.getOriginal_language();
                 id = clickedFavMovie.getMovieId();
-                movie_url = clickedFavMovie.getBackdrop();
+                top_background = clickedFavMovie.getBackdrop();
                 poster_path = clickedFavMovie.getPoster_path();
 
             }catch (Exception e){
@@ -160,7 +185,7 @@ public class DetailActivity extends AppCompatActivity {
         ImageView background = findViewById(R.id.detail_bg);
 
         try {
-            Picasso.with(this).load(movie_url).placeholder(R.drawable.bg).into(background);
+            Picasso.with(this).load(top_background).placeholder(R.drawable.bg).into(background);
             Picasso.with(this).load(poster_path).into(posterImage);
         }catch (Exception e){
             e.printStackTrace();
@@ -263,8 +288,8 @@ public class DetailActivity extends AppCompatActivity {
 
     private void getTrailer_and_reviews(long id) {
 
-        new getTrailersTask().execute(NetworkUtils.buildUrlForDetailActivity(id,"videos",getString(R.string.api_key)));
-        new getReviewsTask().execute(NetworkUtils.buildUrlForDetailActivity(id,"reviews",getString(R.string.api_key)));
+        new getTrailersTask().execute(NetworkUtils.buildUrlForDetailActivity(id,"videos",getString(R.string.api_key),movieOrTvShow));
+        new getReviewsTask().execute(NetworkUtils.buildUrlForDetailActivity(id,"reviews",getString(R.string.api_key),movieOrTvShow));
 
     }
 

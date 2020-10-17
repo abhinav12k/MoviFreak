@@ -107,7 +107,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 Bundle b = new Bundle();
                 b.putParcelable("movie_details", currentMovie);
                 DetailIntent.putExtra("movie_bundle", b);
-                DetailIntent.putExtra("movie_details", "from Main Activity");
+                DetailIntent.putExtra("movie_details", "from Movie Fragment");
                 mContext.startActivity(DetailIntent);
 
             }

@@ -2,26 +2,37 @@ package com.apps.movifreak.Home;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.apps.movifreak.Adapter.MovieAdapter;
 import com.apps.movifreak.Model.Movie;
@@ -29,6 +40,7 @@ import com.apps.movifreak.R;
 import com.apps.movifreak.Utils.JsonUtils;
 import com.apps.movifreak.Utils.NetworkUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONException;
 
@@ -40,31 +52,14 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private RecyclerView mRecyclerView;
     private ActionBar actionBar;
 
-    private int activeId;
     private String returnActivity = "";
-    private ArrayList<Movie> displayMovieList = new ArrayList<>();
-    private MovieAdapter myAdapter = new MovieAdapter(this);
-    private String typeOfMovie = "popular";
-    private boolean isSearchActive = false;
-    private int searchPage = 1;
-    private int popCurrentPage = 1;
-    private int topCurrentPage = 1;
-    private String searchedMovie;
-
-    private ArrayList<Movie> popMoviesList = new ArrayList<>();
-    private ArrayList<Movie> topRatedMoviesList = new ArrayList<>();
-    private ArrayList<Movie> searchedMoviesList = new ArrayList<>();
+    private boolean doubleBackToExitPressedOnce = false;
 
     //Widgets
-    private BottomNavigationView bottomNavigationView;
     private Toolbar main_toolbar;
-    private TextView pageTitle;
-    private ImageView searchIcon;
-    private RelativeLayout backArrow;
-    private EditText mSearchParam;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,261 +69,225 @@ public class MainActivity extends AppCompatActivity {
         //setting up toolbar
         main_toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(main_toolbar);
-//        main_toolbar.setTitleTextColor(getResources().getColor(R.color.colorRed));
-
-        //bottom navigation view
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-
         actionBar = getSupportActionBar();
-//        actionBar.setTitle("Pop Movies");
 
         //Widgets
-        pageTitle = findViewById(R.id.page_title);
-        searchIcon = findViewById(R.id.ic_search);
-        mSearchParam = findViewById(R.id.search);
-        backArrow = findViewById(R.id.ivBackArrow);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_movies);
 
-        pageTitle.setText("Pop Movies");
+        //Creating movie fragment and setting it as default
+        final MovieFragment movieFragment = new MovieFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, movieFragment).commit();
 
-        searchIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initSearchTextListener();
-            }
-        });
+        SwitchCompat drawerSwitch = (SwitchCompat) navigationView.getMenu().findItem(R.id.switch_item).getActionView();
+        // Saving state of our app
+        // using SharedPreferences
+        SharedPreferences sharedPreferences
+                = getSharedPreferences(
+                "sharedPrefs", MODE_PRIVATE);
+        final SharedPreferences.Editor editor
+                = sharedPreferences.edit();
+        final boolean isDarkModeOn
+                = sharedPreferences
+                .getBoolean(
+                        "isDarkModeOn", false);
 
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isSearchActive = false;
-                mSearchParam.setText("");
-                bottomNavigationView.setSelectedItemId(R.id.most_pop);
-
-                if(!popMoviesList.isEmpty()&& popMoviesList.size()!=0){
-                    Log.d(TAG,"Getting movies");
-                    myAdapter.updateMoviesList(popMoviesList);
-                }else {
-                    myAdapter.clearList();
-                    typeOfMovie = "popular";
-                    new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", popCurrentPage));
-                }
-                hideSoftKeyboard();
-            }
-        });
-
-
-        if (savedInstanceState != null && savedInstanceState.containsKey("movies_list")) {
-            Log.d(TAG,"Getting data from savedInstance");
-            activeId = savedInstanceState.getInt("type_of_movie");
-            displayMovieList = savedInstanceState.getParcelableArrayList("movies_list");
+        // When user reopens the app
+        // after applying dark/light mode
+        if (isDarkModeOn) {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_YES);
+            drawerSwitch.setChecked(true);
         } else {
-            Log.d(TAG,"Fetching data onStart of app");
-            //getting movies list asynchronously
-            new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", popCurrentPage));
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_NO);
+            drawerSwitch.setChecked(false);
         }
 
-        //Setting up recycler view
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_thumbnails);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, 3, RecyclerView.VERTICAL, false);
-        mRecyclerView.setLayoutManager(gridLayoutManager);
-        mRecyclerView.setHasFixedSize(true);
-//        myAdapter.updateMoviesList(displayMovieList);
-        mRecyclerView.setAdapter(myAdapter);
-
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        drawerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // if dark mode is off
+                    // it will turn it on
+                    AppCompatDelegate
+                            .setDefaultNightMode(
+                                    AppCompatDelegate
+                                            .MODE_NIGHT_YES);
 
-                if (!recyclerView.canScrollVertically(1)) {
+                    // it will set isDarkModeOn
+                    // boolean to true
+                    editor.putBoolean(
+                            "isDarkModeOn", true);
+                    editor.apply();
+                    Toast.makeText(getApplicationContext(), "Dark Mode On ", Toast.LENGTH_SHORT).show();
+                } else {
+                    // if dark mode is on
+                    // will turn it off
+                    AppCompatDelegate
+                            .setDefaultNightMode(
+                                    AppCompatDelegate
+                                            .MODE_NIGHT_NO);
+                    // it will set isDarkModeOn
+                    // boolean to false
+                    editor.putBoolean(
+                            "isDarkModeOn", false);
+                    editor.apply();
+                    Toast.makeText(getApplicationContext(), "Dark Mode Off", Toast.LENGTH_SHORT).show();
 
-                    if (isSearchActive) {
-                        searchPage++;
-                        Log.d(TAG, "Search Page no: " + searchPage);
-                        new getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie.trim(), searchPage));
-                    } else {
-
-                        if(typeOfMovie.equals("popular")){
-                            popCurrentPage++;
-                            Log.d(TAG, "Page no:Pop " + popCurrentPage);
-                            new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", popCurrentPage));
-                        }else{
-                            topCurrentPage++;
-                            Log.d(TAG, "Page no:Top " + topCurrentPage);
-                            new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", topCurrentPage));
-                        }
-
-                    }
                 }
-
             }
         });
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 switch (item.getItemId()) {
 
-                    case R.id.most_pop:
-                        if (!typeOfMovie.equals("popular")) {
-
-                            pageTitle.setText("Pop Movies");
-                            typeOfMovie = "popular";
-                            if (popMoviesList.isEmpty() && popMoviesList.size() == 0) {
-                                popCurrentPage=1;
-                                displayMovieList.clear();
-                                myAdapter.clearList();
-                                new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", 1));
-                            } else {
-
-                                Log.d(TAG,"Getting movies from already fetched list");
-                                myAdapter.updateMoviesList(popMoviesList);
-
-                            }
-                        }
+                    case R.id.nav_movies:
+                        Toast.makeText(getApplicationContext(), "Movies Clicked", Toast.LENGTH_SHORT).show();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, movieFragment).commit();
                         return true;
-
-                    case R.id.top_rated:
-                        if (!typeOfMovie.equals("top_rated")) {
-
-                            pageTitle.setText("Top Rated Movies");
-                            typeOfMovie = "top_rated";
-                            if(topRatedMoviesList.isEmpty()&&topRatedMoviesList.size()==0) {
-                                topCurrentPage=1;
-                                myAdapter.clearList();
-                                new getMoviesTask().execute(NetworkUtils.buildUrlForGrid(typeOfMovie, getString(R.string.api_key), "", 1));
-                            }else{
-
-                                Log.d(TAG,"Getting movies from already fetched list");
-                                myAdapter.updateMoviesList(topRatedMoviesList);
-
-                            }
-                        }
+                    case R.id.nav_tv:
+                        Toast.makeText(getApplicationContext(), "Tv Clicked", Toast.LENGTH_SHORT).show();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new TvShowFragment()).commit();
                         return true;
-
-                    case R.id.fav_movies:
-                        Intent favIntent = new Intent(MainActivity.this, favActivity.class);
-                        startActivity(favIntent);
-                        returnActivity = "favActivity";
+                    case R.id.nav_github:
+                        Toast.makeText(getApplicationContext(), "Navigating to github", Toast.LENGTH_SHORT).show();
                         return true;
-
+                    case R.id.nav_linkedin:
+                        Toast.makeText(getApplicationContext(), "Navigating to linkedin", Toast.LENGTH_SHORT).show();
+                        return true;
                     default:
                         return false;
                 }
             }
         });
 
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, main_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.colorText));
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        setDefaultTitle();
+
     }
+
+    private void setDefaultTitle() {
+        //TODO: Title not changing - fix it
+        main_toolbar.setTitle("Pop Movies");
+
+        main_toolbar.setTitleTextColor(getResources().getColor(R.color.colorRed));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "menu options created");
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == R.id.search_icon) {
+            //toggle hamburger icon with search bar
+            showSearchBar();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showSearchBar() {
+
+
+        // inflate the customized Action Bar View
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.layout_action_bar, null);
+        final EditText searchParam = v.findViewById(R.id.search);
+
+        if (actionBar != null) {
+
+            // enable the customized view and disable title
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+
+            actionBar.setCustomView(v);
+            // remove Burger Icon
+            main_toolbar.setNavigationIcon(null);
+
+            searchParam.requestFocus();
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInputFromWindow(
+                    main_toolbar.getApplicationWindowToken(),
+                    InputMethodManager.SHOW_FORCED, 0);
+
+            //initialising text search
+            final MovieFragment searchFunction = (MovieFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            searchFunction.initSearchTextListener();
+
+            // add click listener to the back arrow icon
+            v.findViewById(R.id.ivBackArrow).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    searchParam.setText("");
+                    searchFunction.removeSearchResultsAndRefresh();
+
+                    hideSoftKeyboard();
+                    setDefaultTitle();
+
+                    // reverse back the show
+                    actionBar.setDisplayShowCustomEnabled(false);
+                    actionBar.setDisplayShowTitleEnabled(true);
+                    //get the Drawer and DrawerToggle from Main Activity
+                    // set them back as normal
+                    DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                            MainActivity.this, drawer, main_toolbar, R.string.navigation_drawer_open,
+                            R.string.navigation_drawer_close);
+                    toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.colorText));
+                    // All that to re-synchronize the Drawer State
+                    toggle.syncState();
+                }
+            });
+        }
+    }
+
 
     private void hideSoftKeyboard() {
-        pageTitle.setVisibility(View.VISIBLE);
-        backArrow.setVisibility(View.GONE);
-        mSearchParam.setVisibility(View.GONE);
-
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(main_toolbar.getApplicationWindowToken(), 0);
-    }
-
-    private void initSearchTextListener() {
-
-        pageTitle.setVisibility(View.GONE);
-        backArrow.setVisibility(View.VISIBLE);
-        mSearchParam.setVisibility(View.VISIBLE);
-        mSearchParam.setHint("Search...");
-        mSearchParam.requestFocus();
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInputFromWindow(
-                main_toolbar.getApplicationWindowToken(),
-                InputMethodManager.SHOW_FORCED, 0);
-
-        performSearch();
-
-    }
-
-    private void performSearch() {
-
-        mSearchParam.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0 && s.toString().trim() != "") {
-                    //Perform search operation from MoviesDb
-                    isSearchActive = true;
-                    searchPage = 1;
-                    myAdapter.clearList();
-                    Log.d(TAG, "Search Parameter: " + s.toString());
-                    searchedMovie = s.toString().trim();
-                    new getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie, searchPage));
-
-                }
-            }
-        });
-
-    }
-
-    private class getMoviesTask extends AsyncTask<URL, Void, ArrayList<Movie>> {
-
-        @Override
-        protected ArrayList<Movie> doInBackground(URL... urls) {
-            URL url = urls[0];
-
-            ArrayList<Movie> movieArrayList = new ArrayList<>();
-
-
-            try {
-                String receivedJson = NetworkUtils.getResponseFromUrl(url);
-                movieArrayList = JsonUtils.parseMovieJsonArray(receivedJson);
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
-
-            return movieArrayList;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Movie> movies) {
-            if (movies != null && !movies.isEmpty()) {
-
-                if (typeOfMovie.equals("popular")) {
-                    popMoviesList.addAll(movies);
-                    displayMovieList.addAll(movies);
-                } else if (typeOfMovie.equals("top_rated")) {
-                    topRatedMoviesList.addAll(movies);
-                    displayMovieList.addAll(movies);
-                } else {
-                    searchedMoviesList.addAll(movies);
-                    displayMovieList.addAll(movies);
-                }
-
-                myAdapter.addMovies(movies);
-            }
-        }
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(main_toolbar.getWindowToken(), 0);
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        outState.putParcelableArrayList("movies_list", displayMovieList);
-        outState.putInt("type_of_movie", bottomNavigationView.getSelectedItemId());
-        super.onSaveInstanceState(outState, outPersistentState);
+    public void onBackPressed() {
+
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+            } else {
+
+                this.doubleBackToExitPressedOnce = true;
+                Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
+            }
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 3000);
+        }
     }
 
-    @Override
-    protected void onResume() {
-        if (returnActivity.equals("favActivity")) {
-            bottomNavigationView.setSelectedItemId(R.id.most_pop);
-        } else
-            bottomNavigationView.setSelectedItemId(activeId);
-        super.onResume();
-    }
 }
