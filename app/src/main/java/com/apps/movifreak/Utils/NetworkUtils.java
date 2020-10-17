@@ -68,10 +68,15 @@ public class NetworkUtils {
     }
 
     //for getting url ready for trailers/reviews/images
-    public static URL buildUrlForDetailActivity(long Id, String type, String api_key) {
+    public static URL buildUrlForDetailActivity(long Id, String type, String api_key,String movieOrTvShow) {
         //type - videos/reviews
 
-        String searchUrl = BASE_URL_MOVIES + "/" + Id + "/" + type;
+        String searchUrl = null;
+        if(movieOrTvShow.equals("movie")){
+            searchUrl = BASE_URL_MOVIES + "/" + Id + "/" + type;
+        }else if(movieOrTvShow.equals("tvShow")){
+            searchUrl = BASE_URL_TV + "/" + Id + "/" + type;
+        }
 
         Uri buildUri = Uri.parse(searchUrl).buildUpon()
                 .appendQueryParameter(API_KEY, api_key)
@@ -167,7 +172,7 @@ public class NetworkUtils {
     public static String getPosterImageUrl(String poster_path, String sizeOfImage) {
 
         //w185 for thumbnail size poster image
-        String BASE_IMAGE_URL = "https://image.tmdb.org/t/p/" + sizeOfImage + "/";
+        String BASE_IMAGE_URL = "https://image.tmdb.org/t/p/" + sizeOfImage;
         String imageUrl = BASE_IMAGE_URL + poster_path;
         return imageUrl;
 
@@ -177,7 +182,7 @@ public class NetworkUtils {
     public static String getLandscapeImageUrl(String backdrop_path, String sizeOfImage) {
 
         //w780 for landscape size image
-        String BASE_IMAGE_URL = "https://image.tmdb.org/t/p/" + sizeOfImage + "/";
+        String BASE_IMAGE_URL = "https://image.tmdb.org/t/p/" + sizeOfImage;
         String imageUrl = BASE_IMAGE_URL + backdrop_path;
         return imageUrl;
 

@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setDefaultTitle() {
-        //TODO: Title not changing
+        //TODO: Title not changing - fix it
         main_toolbar.setTitle("Pop Movies");
 
         main_toolbar.setTitleTextColor(getResources().getColor(R.color.colorRed));
