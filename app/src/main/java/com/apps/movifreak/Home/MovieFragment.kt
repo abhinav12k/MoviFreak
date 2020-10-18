@@ -160,6 +160,7 @@ class MovieFragment : Fragment() {
                 }
                 R.id.fav_movies -> {
                     val favIntent = Intent(mContext, favActivity::class.java)
+                    favIntent.putExtra("from_fragment","MovieFragment")
                     startActivity(favIntent)
                     returnActivity = "favActivity"
                     true

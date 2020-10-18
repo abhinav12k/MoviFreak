@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.apps.movifreak.Adapter.ReviewAdapter;
 import com.apps.movifreak.Adapter.TrailerAdapter;
 import com.apps.movifreak.Database.AppDatabase;
 import com.apps.movifreak.Database.FavMovie;
+import com.apps.movifreak.Database.FavTvShow;
 import com.apps.movifreak.Model.Movie;
 import com.apps.movifreak.Model.Review;
 import com.apps.movifreak.Model.Trailer;
@@ -37,7 +39,7 @@ import java.util.Date;
 
 public class DetailActivity extends AppCompatActivity {
 
-//    private TextView movie_title;
+    //    private TextView movie_title;
     private TextView movie_releaseDate;
     private TextView movie_language;
     private TextView movie_rating;
@@ -62,13 +64,13 @@ public class DetailActivity extends AppCompatActivity {
 
     //getting TvShow
     private TvShow clickedTvShow;
-//    private FavTvShow clickedFavTvShow;
+    private FavTvShow clickedFavTvShow;
 
     //Whether TvShow or Movie
     private String movieOrTvShow;
 
     //Movie Details
-    private String title,synopsis,releaseDate,rating,lang, top_background,poster_path;
+    private String title, synopsis, releaseDate, rating, lang, top_background, poster_path;
     private long id;
 
     private static final String TAG = DetailActivity.class.getSimpleName();
@@ -97,7 +99,7 @@ public class DetailActivity extends AppCompatActivity {
 
         //getting intent from main activity
         Intent incomingIntent = getIntent();
-        if(incomingIntent.hasExtra("movie_details")) {
+        if (incomingIntent.hasExtra("movie_details")) {
             movieOrTvShow = "movie";
             Bundle bundle = incomingIntent.getBundleExtra("movie_bundle");
             clickedMovie = bundle.getParcelable("movie_details");
@@ -114,17 +116,17 @@ public class DetailActivity extends AppCompatActivity {
             top_background = clickedMovie.getLandscapeImageUrl();
             poster_path = clickedMovie.getPoster_path();
 
-            if(lang==null){
+            if (lang == null) {
                 lang = "en";
             }
 
-        }else if(incomingIntent.hasExtra("tvShow_details")){
+        } else if (incomingIntent.hasExtra("tvShow_details")) {
             //from tvShow fragment
             movieOrTvShow = "tvShow";
             Bundle bundle = incomingIntent.getBundleExtra("tvShow_bundle");
             clickedTvShow = bundle.getParcelable("tvShow_details");
 
-            Log.d(TAG,clickedTvShow.toString());
+            Log.d(TAG, clickedTvShow.toString());
 
             //TvShow Details
             title = clickedTvShow.getTitle();
@@ -135,32 +137,53 @@ public class DetailActivity extends AppCompatActivity {
             top_background = clickedTvShow.getLandscapeImageUrl();
             poster_path = clickedTvShow.getPoster_path();
 
-            if(lang==null){
+            if (lang == null) {
                 lang = "en";
             }
 
-        }else{
+        } else {
 
             try {
-                Bundle bundle = incomingIntent.getBundleExtra("fav_movie_bundle");
-                clickedFavMovie = bundle.getParcelable("fav_movie_details");
 
-                Log.d(TAG, clickedFavMovie.toString());
+                if(incomingIntent.hasExtra("fav_movie_bundle")) {
+                    movieOrTvShow = "movie";
+                    Bundle bundle = incomingIntent.getBundleExtra("fav_movie_bundle");
+                    clickedFavMovie = bundle.getParcelable("fav_movie_details");
 
-                //Movie Details
-                title = clickedFavMovie.getTitle();
-                synopsis = clickedFavMovie.getOverview();
-                releaseDate = clickedFavMovie.getRelease_date();
-                rating = String.valueOf(clickedFavMovie.getVote_average());
-                lang = clickedFavMovie.getOriginal_language();
-                id = clickedFavMovie.getMovieId();
-                top_background = clickedFavMovie.getBackdrop();
-                poster_path = clickedFavMovie.getPoster_path();
+                    Log.d(TAG, clickedFavMovie.toString());
 
-            }catch (Exception e){
+                    //Movie Details
+                    title = clickedFavMovie.getTitle();
+                    synopsis = clickedFavMovie.getOverview();
+                    releaseDate = clickedFavMovie.getRelease_date();
+                    rating = String.valueOf(clickedFavMovie.getVote_average());
+                    lang = clickedFavMovie.getOriginal_language();
+                    id = clickedFavMovie.getMovieId();
+                    top_background = clickedFavMovie.getBackdrop();
+                    poster_path = clickedFavMovie.getPoster_path();
+
+                }else if(incomingIntent.hasExtra("fav_tvShow_bundle")){
+                    movieOrTvShow = "tvShow";
+                    Bundle bundle = incomingIntent.getBundleExtra("fav_tvShow_bundle");
+                    clickedFavTvShow = bundle.getParcelable("fav_tvShow_details");
+
+                    Log.d(TAG, clickedFavTvShow.toString());
+
+                    //Movie Details
+                    title = clickedFavTvShow.getTitle();
+                    synopsis = clickedFavTvShow.getOverview();
+                    releaseDate = clickedFavTvShow.getFirst_air_date();
+                    rating = String.valueOf(clickedFavTvShow.getVote_average());
+                    id = clickedFavTvShow.getTvShowId();
+                    top_background = clickedFavTvShow.getLandscapeImageUrl();
+                    poster_path = clickedFavTvShow.getPoster_path();
+
+                }
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(lang==null){
+            if (lang == null) {
                 lang = "en";
             }
 
@@ -187,26 +210,40 @@ public class DetailActivity extends AppCompatActivity {
         try {
             Picasso.with(this).load(top_background).placeholder(R.drawable.bg).into(background);
             Picasso.with(this).load(poster_path).into(posterImage);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        getTrailer_and_reviews(id);
-
-        //checking if the movie is already added to favorite
+        //checking if the movie/TvShow is already added to favorite
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                FavMovie movie = mDb.movieDao().loadMovieById(id);
-                if(movie!=null) {
-                    fav_image_filled.setVisibility(View.VISIBLE);
-                    fav_image_empty.setVisibility(View.GONE);
-                }else{
-                    fav_image_empty.setVisibility(View.VISIBLE);
-                    fav_image_filled.setVisibility(View.GONE);
+                if (movieOrTvShow.equals("movie")) {
+                    //Checking for Movie
+                    FavMovie movie = mDb.movieDao().loadMovieById(id);
+                    if (movie != null) {
+                        fav_image_filled.setVisibility(View.VISIBLE);
+                        fav_image_empty.setVisibility(View.GONE);
+                    } else {
+                        fav_image_empty.setVisibility(View.VISIBLE);
+                        fav_image_filled.setVisibility(View.GONE);
+                    }
+                } else {
+                    //Checking for TvShow
+                    FavTvShow tvShow = mDb.tvShowDao().loadTvShowByTvShowId(id);
+                    if (tvShow != null) {
+                        fav_image_filled.setVisibility(View.VISIBLE);
+                        fav_image_empty.setVisibility(View.GONE);
+                    } else {
+                        fav_image_empty.setVisibility(View.VISIBLE);
+                        fav_image_filled.setVisibility(View.GONE);
+                    }
                 }
+
             }
         });
+
+        getTrailer_and_reviews(id);
 
         fav_image_empty.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,15 +255,42 @@ public class DetailActivity extends AppCompatActivity {
                 //getting fav movie details
                 Date date = new Date();
 
-                final FavMovie favMovie = new FavMovie(clickedMovie.getTitle(),clickedMovie.getSummary(),clickedMovie.getRating(),clickedMovie.getRelease_date(),clickedMovie.isAdult(),clickedMovie.getPoster_path(),clickedMovie.getVote_count(),clickedMovie.getPopularity(),clickedMovie.getLandscapeImageUrl(),date,clickedMovie.getId(),clickedMovie.getOriginal_language());
+                if (movieOrTvShow.equals("movie")) {
 
-                //save details to the database
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.movieDao().insertMovie(favMovie);
-                    }
-                });
+                    final FavMovie favMovie = new FavMovie(clickedMovie.getTitle(), clickedMovie.getSummary(),
+                            clickedMovie.getRating(), clickedMovie.getRelease_date(), clickedMovie.isAdult(),
+                            clickedMovie.getPoster_path(), clickedMovie.getVote_count(), clickedMovie.getPopularity(),
+                            clickedMovie.getLandscapeImageUrl(), date, clickedMovie.getId(),
+                            clickedMovie.getOriginal_language());
+
+                    //save details to the database
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDb.movieDao().insertMovie(favMovie);
+                        }
+                    });
+
+                } else {
+
+                    final FavTvShow favTvShow = new FavTvShow(0,clickedTvShow.getTitle(),
+                            clickedTvShow.getOriginal_name(), clickedTvShow.getPopularity(),
+                            clickedTvShow.getVote_count(), clickedTvShow.getFirst_air_date(),
+                            clickedTvShow.getBackdrop_path(), clickedTvShow.getId(), clickedTvShow.getVote_average(),
+                            clickedTvShow.getOverview(), clickedTvShow.getPoster_path(),
+                            clickedTvShow.getLandscapeImageUrl(), date);
+
+                    Log.d(TAG, "Saving TvShow: " + favTvShow.toString());
+
+                    //saving details to the database
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDb.tvShowDao().insertTvShow(favTvShow);
+                        }
+                    });
+
+                }
                 Toast.makeText(DetailActivity.this, "Added to collection!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -238,14 +302,30 @@ public class DetailActivity extends AppCompatActivity {
                 fav_image_filled.setVisibility(View.GONE);
                 fav_image_empty.setVisibility(View.VISIBLE);
 
-                //delete details from the database
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        FavMovie deleteMovie = mDb.movieDao().loadMovieById(id);
-                        mDb.movieDao().deleteMovie(deleteMovie);
-                    }
-                });
+                if (movieOrTvShow.equals("movie")) {
+
+                    //delete details from the database
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            FavMovie deleteMovie = mDb.movieDao().loadMovieById(id);
+                            mDb.movieDao().deleteMovie(deleteMovie);
+                        }
+                    });
+
+                } else {
+
+                    //delete details from the database
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            FavTvShow deleteTvShow = mDb.tvShowDao().loadTvShowByTvShowId(id);
+                            Log.d(TAG, "TvSHow deleted: " + deleteTvShow.toString());
+                            mDb.tvShowDao().deleteTvShow(deleteTvShow);
+                        }
+                    });
+
+                }
                 Toast.makeText(DetailActivity.this, "Removed from collection!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -265,35 +345,35 @@ public class DetailActivity extends AppCompatActivity {
     private void setupReviewsList() {
 
         //setting up reviews list
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DetailActivity.this,RecyclerView.VERTICAL,false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DetailActivity.this, RecyclerView.VERTICAL, false);
         reviewsRecyclerView.setLayoutManager(linearLayoutManager);
         reviewsRecyclerView.setHasFixedSize(true);
 
         //setting up adapter
-        ReviewAdapter reviewAdapter = new ReviewAdapter(DetailActivity.this,reviewArrayList);
+        ReviewAdapter reviewAdapter = new ReviewAdapter(DetailActivity.this, reviewArrayList);
         reviewsRecyclerView.setAdapter(reviewAdapter);
     }
 
     private void setupTrailerList() {
         //setting up trailer's list
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DetailActivity.this,RecyclerView.HORIZONTAL,false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DetailActivity.this, RecyclerView.HORIZONTAL, false);
         trailerRecyclerView.setLayoutManager(linearLayoutManager);
         trailerRecyclerView.setHasFixedSize(true);
 
         //setting up adapter
-        TrailerAdapter adapter = new TrailerAdapter(DetailActivity.this,trailerArrayList);
+        TrailerAdapter adapter = new TrailerAdapter(DetailActivity.this, trailerArrayList);
         trailerRecyclerView.setAdapter(adapter);
 
     }
 
     private void getTrailer_and_reviews(long id) {
 
-        new getTrailersTask().execute(NetworkUtils.buildUrlForDetailActivity(id,"videos",getString(R.string.api_key),movieOrTvShow));
-        new getReviewsTask().execute(NetworkUtils.buildUrlForDetailActivity(id,"reviews",getString(R.string.api_key),movieOrTvShow));
+        new getTrailersTask().execute(NetworkUtils.buildUrlForDetailActivity(id, "videos", getString(R.string.api_key), movieOrTvShow));
+        new getReviewsTask().execute(NetworkUtils.buildUrlForDetailActivity(id, "reviews", getString(R.string.api_key), movieOrTvShow));
 
     }
 
-    private class getTrailersTask extends AsyncTask<URL,Void, ArrayList<Trailer>>{
+    private class getTrailersTask extends AsyncTask<URL, Void, ArrayList<Trailer>> {
 
         @Override
         protected ArrayList<Trailer> doInBackground(URL... urls) {
@@ -302,10 +382,10 @@ public class DetailActivity extends AppCompatActivity {
 
             URL url = urls[0];
 
-            try{
+            try {
                 String receivedJson = NetworkUtils.getResponseFromUrl(url);
                 trailers = JsonUtils.parseTrailerJsonArray(receivedJson);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -315,13 +395,13 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Trailer> trailers) {
             trailerArrayList = trailers;
-            if(!trailerArrayList.isEmpty()&&trailerArrayList.size()!=0)
+            if (!trailerArrayList.isEmpty() && trailerArrayList.size() != 0)
                 trailerHeading.setVisibility(View.VISIBLE);
             setupTrailerList();
         }
     }
 
-    private class getReviewsTask extends AsyncTask<URL,Void,ArrayList<Review>>{
+    private class getReviewsTask extends AsyncTask<URL, Void, ArrayList<Review>> {
 
         @Override
         protected ArrayList<Review> doInBackground(URL... urls) {
@@ -330,12 +410,12 @@ public class DetailActivity extends AppCompatActivity {
 
             URL url = urls[0];
 
-            try{
+            try {
 
                 String receivedJson = NetworkUtils.getResponseFromUrl(url);
                 reviews = JsonUtils.parseReviewJsonArray(receivedJson);
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -345,7 +425,7 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Review> reviews) {
             reviewArrayList = reviews;
-            if(reviewArrayList.size()!=0&&!reviews.isEmpty())
+            if (reviewArrayList.size() != 0 && !reviews.isEmpty())
                 reviewHeading.setVisibility(View.VISIBLE);
             setupReviewsList();
         }
