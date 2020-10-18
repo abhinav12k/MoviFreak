@@ -15,11 +15,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.apps.movifreak.Database.FavMovie;
+import com.apps.movifreak.Database.FavTvShow;
 import com.apps.movifreak.Home.DetailActivity;
 import com.apps.movifreak.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,11 +32,26 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder> {
 
     private static final String TAG = FavAdapter.class.getSimpleName();
 
-    private List<FavMovie> favMovieList;
-    private Context mContext;
+    //for favorite movies
+    private List<FavMovie> favMovieList = new ArrayList<>();
 
-    public void addMovies(List<FavMovie> favMovies){
-        favMovieList = favMovies;
+    //for favorite tvShows
+    private List<FavTvShow> favTvShowList = new ArrayList<>();
+
+    private Context mContext;
+    private String movieOrTvShow;
+
+    public void addTvShows(List<FavTvShow> favTvShows,String movieOrTvShow){
+        this.favMovieList.clear();
+        this.favTvShowList = favTvShows;
+        this.movieOrTvShow = movieOrTvShow;
+        notifyDataSetChanged();
+    }
+
+    public void addMovies(List<FavMovie> favMovies,String movieOrTvShow){
+        this.favTvShowList.clear();
+        this.favMovieList = favMovies;
+        this.movieOrTvShow = movieOrTvShow;
         notifyDataSetChanged();
     }
 
@@ -53,58 +71,116 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final FavAdapter.ViewHolder holder, final int position) {
-        final String tileUrl = favMovieList.get(position).getPoster_path();
 
-        Picasso.with(mContext).load(tileUrl).networkPolicy(NetworkPolicy.OFFLINE).into(holder.movie_tile, new Callback() {
-            @Override
-            public void onSuccess() {
-                holder.mProgressBar.setVisibility(View.INVISIBLE);
-            }
+        if(movieOrTvShow.equals("movie")) {
 
-            @Override
-            public void onError() {
-                //Try again online if cache failed
-                Picasso.with(mContext)
-                        .load(tileUrl)
-                        .into(holder.movie_tile, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                holder.mProgressBar.setVisibility(View.INVISIBLE);
-                            }
+            final String tileUrl = favMovieList.get(position).getPoster_path();
 
-                            @Override
-                            public void onError() {
-                                Log.d(TAG,"Error in loading images");
-                            }
-                        });
-            }
-        });
+            Picasso.with(mContext).load(tileUrl).networkPolicy(NetworkPolicy.OFFLINE).into(holder.movie_tile, new Callback() {
+                @Override
+                public void onSuccess() {
+                    holder.mProgressBar.setVisibility(View.INVISIBLE);
+                }
 
-        final String movieRating = String.valueOf(favMovieList.get(position).getVote_average());
-        final String movieYear = favMovieList.get(position).getRelease_date().substring(0,4);
+                @Override
+                public void onError() {
+                    //Try again online if cache failed
+                    Picasso.with(mContext)
+                            .load(tileUrl)
+                            .into(holder.movie_tile, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    holder.mProgressBar.setVisibility(View.INVISIBLE);
+                                }
 
-        holder.movie_rating.setText(movieRating);
-        holder.movie_year.setText(movieYear);
+                                @Override
+                                public void onError() {
+                                    Log.d(TAG, "Error in loading images");
+                                }
+                            });
+                }
+            });
 
-        holder.movie_tile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            final String movieRating = String.valueOf(favMovieList.get(position).getVote_average());
+            final String movieYear = favMovieList.get(position).getRelease_date().substring(0, 4);
 
-                FavMovie currentMovie = favMovieList.get(position);
-                Intent DetailIntent = new Intent(mContext, DetailActivity.class);
-                Bundle b = new Bundle();
-                b.putParcelable("fav_movie_details",currentMovie);
-                DetailIntent.putExtra("fav_movie_bundle",b);
-                mContext.startActivity(DetailIntent);
+            holder.movie_rating.setText(movieRating);
+            holder.movie_year.setText(movieYear);
 
-            }
-        });
+            holder.movie_tile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    FavMovie currentMovie = favMovieList.get(position);
+                    Intent DetailIntent = new Intent(mContext, DetailActivity.class);
+                    Bundle b = new Bundle();
+                    b.putParcelable("fav_movie_details", currentMovie);
+                    DetailIntent.putExtra("fav_movie_bundle", b);
+                    mContext.startActivity(DetailIntent);
+
+                }
+            });
+
+        }else if(movieOrTvShow.equals("tvShow")){
+
+            Log.d(TAG,favTvShowList.get(position).toString());
+
+            final String tileUrl = favTvShowList.get(position).getPoster_path();
+
+            Picasso.with(mContext).load(tileUrl).networkPolicy(NetworkPolicy.OFFLINE).into(holder.movie_tile, new Callback() {
+                @Override
+                public void onSuccess() {
+                    holder.mProgressBar.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onError() {
+                    //Try again online if cache failed
+                    Picasso.with(mContext)
+                            .load(tileUrl)
+                            .into(holder.movie_tile, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    holder.mProgressBar.setVisibility(View.INVISIBLE);
+                                }
+
+                                @Override
+                                public void onError() {
+                                    Log.d(TAG, "Error in loading images");
+                                }
+                            });
+                }
+            });
+
+            final String tvShowRating = String.valueOf(favTvShowList.get(position).getVote_average());
+            final String firstAirDate = favTvShowList.get(position).getFirst_air_date().substring(0, 4);
+
+            holder.movie_rating.setText(tvShowRating);
+            holder.movie_year.setText(firstAirDate);
+
+            holder.movie_tile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    FavTvShow currentTvShow = favTvShowList.get(position);
+                    Intent DetailIntent = new Intent(mContext, DetailActivity.class);
+                    Bundle b = new Bundle();
+                    b.putParcelable("fav_tvShow_details", currentTvShow);
+                    DetailIntent.putExtra("fav_tvShow_bundle", b);
+                    mContext.startActivity(DetailIntent);
+
+                }
+            });
+
+        }
     }
 
     @Override
     public int getItemCount() {
-        if(favMovieList!=null)
+        if(favMovieList.size()!=0)
             return favMovieList.size();
+        else if(favTvShowList.size()!=0)
+            return favTvShowList.size();
         else
             return 0;
     }

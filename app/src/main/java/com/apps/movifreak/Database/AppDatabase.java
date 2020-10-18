@@ -12,7 +12,7 @@ import androidx.room.TypeConverters;
  * Created by abhinav on 5/7/20.
  */
 
-@Database(entities = {FavMovie.class}, version = 2, exportSchema = false)
+@Database(entities = {FavMovie.class,FavTvShow.class}, version = 2, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -35,4 +35,6 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public abstract MovieDao movieDao();
+
+    public abstract TvShowDao tvShowDao();
 }

@@ -1,6 +1,7 @@
 package com.apps.movifreak.Home
 
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -155,8 +156,10 @@ class TvShowFragment : Fragment() {
                 }
 
                 R.id.fav_movies -> {
-                    //TODO - Add fav activity for fav movies
-                    Toast.makeText(mContext,"Fav Pressed",Toast.LENGTH_SHORT).show()
+                    val favIntent = Intent(mContext, favActivity::class.java)
+                    favIntent.putExtra("from_fragment","TvShowFragment")
+                    startActivity(favIntent)
+                    returnActivity = "favActivity"
                     true
                 }
 
