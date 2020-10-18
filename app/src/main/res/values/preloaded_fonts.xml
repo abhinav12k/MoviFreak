@@ -13,5 +13,6 @@
         <item>@font/nunito_sans_bold</item>
         <item>@font/overpass_light</item>
         <item>@font/poppins_bold</item>
+        <item>@font/roboto</item>
     </array>
 </resources>

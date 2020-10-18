@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -41,21 +42,21 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder> {
     private Context mContext;
     private String movieOrTvShow;
 
-    public void addTvShows(List<FavTvShow> favTvShows,String movieOrTvShow){
+    public void addTvShows(List<FavTvShow> favTvShows, String movieOrTvShow) {
         this.favMovieList.clear();
         this.favTvShowList = favTvShows;
         this.movieOrTvShow = movieOrTvShow;
         notifyDataSetChanged();
     }
 
-    public void addMovies(List<FavMovie> favMovies,String movieOrTvShow){
+    public void addMovies(List<FavMovie> favMovies, String movieOrTvShow) {
         this.favTvShowList.clear();
         this.favMovieList = favMovies;
         this.movieOrTvShow = movieOrTvShow;
         notifyDataSetChanged();
     }
 
-    public FavAdapter(Context context){
+    public FavAdapter(Context context) {
         this.mContext = context;
     }
 
@@ -63,16 +64,18 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder> {
     @Override
     public FavAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View listItem = layoutInflater.inflate(R.layout.single_movie_tile,parent,false);
+        View listItem = layoutInflater.inflate(R.layout.single_movie_tile, parent, false);
         FavAdapter.ViewHolder viewHolder = new FavAdapter.ViewHolder(listItem);
         mContext = parent.getContext();
         return viewHolder;
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull final FavAdapter.ViewHolder holder, final int position) {
 
-        if(movieOrTvShow.equals("movie")) {
+        if (movieOrTvShow.equals("movie")) {
+
 
             final String tileUrl = favMovieList.get(position).getPoster_path();
 
@@ -121,9 +124,11 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder> {
                 }
             });
 
-        }else if(movieOrTvShow.equals("tvShow")){
 
-            Log.d(TAG,favTvShowList.get(position).toString());
+        } else if (movieOrTvShow.equals("tvShow")) {
+
+
+            Log.d(TAG, favTvShowList.get(position).toString());
 
             final String tileUrl = favTvShowList.get(position).getPoster_path();
 
@@ -177,15 +182,16 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        if(favMovieList.size()!=0)
+        if (favMovieList.size() != 0)
             return favMovieList.size();
-        else if(favTvShowList.size()!=0)
+        else if (favTvShowList.size() != 0)
             return favTvShowList.size();
         else
             return 0;
+
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView movie_tile;
         public ProgressBar mProgressBar;
         public TextView movie_rating, movie_year;

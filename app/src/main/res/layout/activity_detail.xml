@@ -47,6 +47,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_margin="15dp"
                 android:hapticFeedbackEnabled="true"
+                android:tint="@color/starEmpty"
                 android:src="@drawable/ic_star_empty" />
 
             <ImageView
