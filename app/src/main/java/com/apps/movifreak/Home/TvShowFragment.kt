@@ -40,6 +40,7 @@ class TvShowFragment : Fragment() {
     private var popCurrentPage = 1
     private var topCurrentPage = 1
     private var searchedTvShow: String? = null
+    private var searchPageLimit: Int = 3
 
     //Movies List
     private val popTvShowList = ArrayList<TvShow>()
@@ -67,21 +68,23 @@ class TvShowFragment : Fragment() {
         mRecyclerView?.setHasFixedSize(true)
         mRecyclerView?.adapter = myAdapter
 
-        getTvShowsTask().execute(NetworkUtils.buildUrlForTV(typeOfTvShow,getString(R.string.api_key),"",popCurrentPage.toLong()))
+        getTvShowsTask().execute(NetworkUtils.buildUrlForTV(typeOfTvShow, getString(R.string.api_key), "", popCurrentPage.toLong()))
 
-        mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+        mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if(!recyclerView.canScrollVertically(1)){
+                if (!recyclerView.canScrollVertically(1)) {
 
-                    if(isSearchActive){
-                        searchPage++
-                        Log.d(TAG, "Search Page no: $searchPage")
-                        if (searchedTvShow != null) {
-                            getTvShowsTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedTvShow?.trim(), searchPage.toLong()))
+                    if (isSearchActive) {
+                        if (searchPage < searchPageLimit) {
+                            searchPage++
+                            Log.d(TAG, "Search Page no: $searchPage")
+                            if (searchedTvShow != null) {
+                                getTvShowsTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedTvShow?.trim(), searchPage.toLong()))
+                            }
                         }
-                    }else{
+                    } else {
 
                         if (typeOfTvShow == "popular") {
                             popCurrentPage++
@@ -101,7 +104,7 @@ class TvShowFragment : Fragment() {
         })
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            when(item.itemId){
+            when (item.itemId) {
 
                 R.id.most_pop -> {
                     if (typeOfTvShow != "popular") {
@@ -157,7 +160,7 @@ class TvShowFragment : Fragment() {
 
                 R.id.fav_movies -> {
                     val favIntent = Intent(mContext, favActivity::class.java)
-                    favIntent.putExtra("from_fragment","TvShowFragment")
+                    favIntent.putExtra("from_fragment", "TvShowFragment")
                     startActivity(favIntent)
                     returnActivity = "favActivity"
                     true
