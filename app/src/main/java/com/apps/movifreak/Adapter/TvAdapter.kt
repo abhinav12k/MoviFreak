@@ -17,33 +17,90 @@ import com.apps.movifreak.R
 import com.squareup.picasso.Callback
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
-import java.lang.Exception
 
 /**
  * Created by abhinav on 3/10/20.
  */
 
-
 private val TAG: String? = TvAdapter::class.java.simpleName
 
 class TvAdapter(mContext: Context) : RecyclerView.Adapter<TvAdapter.ViewHolder>(){
 
-    private var tvList = ArrayList<TvShow>()
+    /**
+     * Type of TvShow -> 1.pop
+     *                  2.top
+     *                  3.search
+     * */
+
+    private var topTvList = ArrayList<TvShow>()
+    private var popTvList = ArrayList<TvShow>()
+    private var searchTvList = ArrayList<TvShow>()
+    private var listInUse = ArrayList<TvShow>()
+
+    private var typeOfTvShow: String = "pop"
+
     private lateinit var mContext:Context
 
-    fun addTvShows(mList: ArrayList<TvShow?>?){
-        this.tvList.addAll(mList as Collection<TvShow>)
+    fun addTopTvShowList(mList: ArrayList<TvShow>, type: String){
+        this.topTvList.addAll(mList)
+        typeOfTvShow = type
         notifyDataSetChanged()
     }
 
-    fun clearList(){
-        this.tvList.clear()
+    fun clearTopTvShowList(){
+        this.topTvList.clear()
         notifyDataSetChanged()
     }
 
-    fun updateTvShows(mList: ArrayList<TvShow>){
-        this.tvList.clear()
-        this.tvList = mList
+    fun updateTopTvShowList(mList: ArrayList<TvShow>, type: String){
+        this.topTvList.clear()
+        this.topTvList = mList
+        typeOfTvShow = type
+        notifyDataSetChanged()
+    }
+
+    fun addPopTvShowList(mList: ArrayList<TvShow>, type: String){
+        this.popTvList.addAll(mList)
+        typeOfTvShow = type
+        notifyDataSetChanged()
+    }
+
+    fun updatePopTvShowList(mList: ArrayList<TvShow>, type: String){
+        this.popTvList.clear()
+        this.popTvList = mList
+        typeOfTvShow = type
+        notifyDataSetChanged()
+    }
+
+    fun clearPopTvShowList(){
+        this.popTvList.clear()
+        notifyDataSetChanged()
+    }
+
+    fun addSearchTvShowList(mList: ArrayList<TvShow>, type: String){
+        this.searchTvList.addAll(mList)
+        typeOfTvShow = type
+        notifyDataSetChanged()
+    }
+
+    fun updateSearchTvShowList(mList: ArrayList<TvShow>, type: String){
+        this.searchTvList.clear()
+        this.searchTvList = mList
+        typeOfTvShow = type
+        notifyDataSetChanged()
+    }
+
+    fun clearSearchTvShowList(){
+        this.searchTvList.clear()
+        this.listInUse.clear()
+        notifyDataSetChanged()
+    }
+
+    fun clearAllTvShowList(){
+        this.searchTvList.clear()
+        this.popTvList.clear()
+        this.topTvList.clear()
+        listInUse.clear()
         notifyDataSetChanged()
     }
 
@@ -56,7 +113,7 @@ class TvAdapter(mContext: Context) : RecyclerView.Adapter<TvAdapter.ViewHolder>(
 
     override fun onBindViewHolder(holder: TvAdapter.ViewHolder, position: Int) {
 
-        val tileUrl: String? = tvList[position]?.poster_path
+        val tileUrl: String? = listInUse[position]?.poster_path
 
         Picasso.with(mContext).load(tileUrl).networkPolicy(NetworkPolicy.OFFLINE).into(holder.tv_title, object : Callback {
             override fun onSuccess() {
@@ -80,12 +137,12 @@ class TvAdapter(mContext: Context) : RecyclerView.Adapter<TvAdapter.ViewHolder>(
         })
 
         try {
-            val tvRating: String = tvList[position]?.vote_average.toString()
-            val movieYear: String? = tvList[position]?.first_air_date?.substring(0, 4)
+            val tvRating: String = listInUse[position]?.vote_average.toString()
+            val movieYear: String? = listInUse[position]?.first_air_date?.substring(0, 4)
 
             holder.tv_rating!!.text = tvRating
             holder.tv_year!!.text = movieYear
-        }catch (e : Exception){
+        }catch (e: Exception){
             e.printStackTrace()
         }
 
@@ -94,7 +151,7 @@ class TvAdapter(mContext: Context) : RecyclerView.Adapter<TvAdapter.ViewHolder>(
         holder.tv_title!!.setOnClickListener {
 
             //Take to the detailed activity
-            val currentTvShow: TvShow = tvList[position]
+            val currentTvShow: TvShow = listInUse[position]
             val DetailIntent = Intent(mContext, DetailActivity::class.java)
             val b = Bundle()
             b.putParcelable("tvShow_details", currentTvShow)
@@ -107,10 +164,15 @@ class TvAdapter(mContext: Context) : RecyclerView.Adapter<TvAdapter.ViewHolder>(
     }
 
     override fun getItemCount(): Int {
-        return tvList.size
+        when (typeOfTvShow) {
+            "pop" -> listInUse = popTvList
+            "top" -> listInUse = topTvList
+            "search" -> listInUse = searchTvList
+        }
+        return listInUse.size
     }
 
-    public class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         var tv_title: ImageView? = itemView.findViewById(R.id.movie_thumbnail)
         var tv_rating: TextView? = itemView.findViewById(R.id.tv_rating)

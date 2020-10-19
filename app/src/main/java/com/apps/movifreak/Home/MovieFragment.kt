@@ -102,7 +102,7 @@ class MovieFragment : Fragment() {
                             searchPage++
                             Log.d(TAG, "Search Page no: $searchPage")
                             if (searchedMovie != null) {
-                                getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie?.trim(), searchPage.toLong()))
+                                getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie?.trim(), searchPage.toLong(),"movie"))
                             }
                         }
                     } else {
@@ -314,7 +314,7 @@ class MovieFragment : Fragment() {
                     myAdapter.clearAllLists()
                     Log.d(TAG, "Search Parameter: $s")
                     searchedMovie = s.toString().trim { it <= ' ' }
-                    getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie?.trim(), searchPage.toLong()))
+                    getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie?.trim(), searchPage.toLong(),"movie"))
                 }
             }
         })

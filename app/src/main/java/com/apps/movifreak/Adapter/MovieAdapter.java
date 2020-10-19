@@ -51,7 +51,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public void addTopMovies(ArrayList<Movie> mList,String type) {
         this.topMovieList.addAll(mList);
         this.typeOfMovie = type;
-        listInUse = this.topMovieList;
         notifyDataSetChanged();
     }
 
@@ -59,15 +58,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         this.topMovieList.clear();
         this.topMovieList = newList;
         this.typeOfMovie = type;
-        listInUse = this.topMovieList;
         notifyDataSetChanged();
     }
 
     public void addPopMovies(ArrayList<Movie> popList,String type){
         this.popMovieList.addAll(popList);
         this.typeOfMovie = type;
-        clearSearchMovieList();
-        listInUse = this.popMovieList;
         notifyDataSetChanged();
     }
 
@@ -75,14 +71,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         this.popMovieList.clear();
         this.popMovieList = popList;
         this.typeOfMovie = type;
-        listInUse = this.popMovieList;
         notifyDataSetChanged();
     }
 
     public void addSearchMovieList(ArrayList<Movie> searchMovieList,String type){
         this.searchMovieList.addAll(searchMovieList);
         this.typeOfMovie = type;
-        listInUse = this.searchMovieList;
         notifyDataSetChanged();
     }
 
@@ -90,7 +84,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         this.searchMovieList.clear();
         this.searchMovieList = searchMovieList;
         this.typeOfMovie = type;
-        listInUse = this.searchMovieList;
         notifyDataSetChanged();
     }
 
@@ -101,6 +94,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     public void clearSearchMovieList(){
         this.searchMovieList.clear();
+        this.listInUse.clear();
         notifyDataSetChanged();
     }
 
@@ -127,18 +121,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull final MovieAdapter.ViewHolder holder, final int position) {
-
-        switch (typeOfMovie){
-            case "pop":
-                listInUse = popMovieList;
-                break;
-            case "top":
-                listInUse = topMovieList;
-                break;
-            case "search":
-                listInUse = searchMovieList;
-                break;
-        }
 
         final String tileUrl = listInUse.get(position).getPoster_path();
 

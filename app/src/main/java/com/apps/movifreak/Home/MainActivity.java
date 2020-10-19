@@ -19,6 +19,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String returnActivity = "";
     private boolean doubleBackToExitPressedOnce = false;
+    private String activeFragment = "movie";
 
     //Widgets
     private Toolbar main_toolbar;
@@ -87,19 +89,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_movies);
-
-//        ImageView internetIssue = findViewById(R.id.internet_issue);
-//        LinearLayout baseLayout = findViewById(R.id.base_layout);
-
-        //Check for internet connection
-//        if(!isInternetAvailable()){
-//            internetIssue.setVisibility(View.VISIBLE);
-//            baseLayout.setVisibility(View.GONE);
-////            Toast.makeText(this, "No Internet Connection please check your internet connection and try again", Toast.LENGTH_SHORT).show();
-//        }else{
-//            internetIssue.setVisibility(View.GONE);
-//            baseLayout.setVisibility(View.VISIBLE);
-//        }
 
         //Creating movie fragment and setting it as default
         final MovieFragment movieFragment = new MovieFragment();
@@ -175,18 +164,20 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
 
                     case R.id.nav_movies:
-//                        Toast.makeText(getApplicationContext(), "Movies Clicked", Toast.LENGTH_SHORT).show();
+                        activeFragment = "movie";
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, movieFragment).commit();
                         return true;
                     case R.id.nav_tv:
-//                        Toast.makeText(getApplicationContext(), "Tv Clicked", Toast.LENGTH_SHORT).show();
+                        activeFragment = "tvShow";
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new TvShowFragment()).commit();
                         return true;
                     case R.id.nav_github:
-                        Toast.makeText(getApplicationContext(), "Navigating to github", Toast.LENGTH_SHORT).show();
+                        Intent github = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/abhinav78910/"));
+                        startActivity(github);
                         return true;
                     case R.id.nav_linkedin:
-                        Toast.makeText(getApplicationContext(), "Navigating to linkedin", Toast.LENGTH_SHORT).show();
+                        Intent linkedin = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/abhinav12k/"));
+                        startActivity(linkedin);
                         return true;
                     default:
                         return false;
@@ -251,34 +242,67 @@ public class MainActivity extends AppCompatActivity {
                     InputMethodManager.SHOW_FORCED, 0);
 
             //initialising text search
-            final MovieFragment searchFunction = (MovieFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            searchFunction.initSearchTextListener();
+            if(activeFragment.equals("movie")) {
+                final MovieFragment searchFunction = (MovieFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                searchFunction.initSearchTextListener();
 
-            // add click listener to the back arrow icon
-            v.findViewById(R.id.ivBackArrow).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                // add click listener to the back arrow icon
+                v.findViewById(R.id.ivBackArrow).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                    searchParam.setText("");
-                    searchFunction.removeSearchResultsAndRefresh();
+                        searchParam.setText("");
+                        searchFunction.removeSearchResultsAndRefresh();
 
-                    hideSoftKeyboard();
-                    setDefaultTitle();
+                        hideSoftKeyboard();
+                        setDefaultTitle();
 
-                    // reverse back the show
-                    actionBar.setDisplayShowCustomEnabled(false);
-                    actionBar.setDisplayShowTitleEnabled(true);
-                    //get the Drawer and DrawerToggle from Main Activity
-                    // set them back as normal
-                    DrawerLayout drawer = findViewById(R.id.drawer_layout);
-                    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                            MainActivity.this, drawer, main_toolbar, R.string.navigation_drawer_open,
-                            R.string.navigation_drawer_close);
-                    toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.colorText));
-                    // All that to re-synchronize the Drawer State
-                    toggle.syncState();
-                }
-            });
+                        // reverse back the show
+                        actionBar.setDisplayShowCustomEnabled(false);
+                        actionBar.setDisplayShowTitleEnabled(true);
+                        //get the Drawer and DrawerToggle from Main Activity
+                        // set them back as normal
+                        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                                MainActivity.this, drawer, main_toolbar, R.string.navigation_drawer_open,
+                                R.string.navigation_drawer_close);
+                        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.colorText));
+                        // All that to re-synchronize the Drawer State
+                        toggle.syncState();
+                    }
+                });
+            }else{
+
+                final TvShowFragment searchFunction = (TvShowFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                searchFunction.initSearchTextListener();
+
+                // add click listener to the back arrow icon
+                v.findViewById(R.id.ivBackArrow).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        searchParam.setText("");
+                        searchFunction.removeSearchResultsAndRefresh();
+
+                        hideSoftKeyboard();
+                        setDefaultTitle();
+
+                        // reverse back the show
+                        actionBar.setDisplayShowCustomEnabled(false);
+                        actionBar.setDisplayShowTitleEnabled(true);
+                        //get the Drawer and DrawerToggle from Main Activity
+                        // set them back as normal
+                        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                                MainActivity.this, drawer, main_toolbar, R.string.navigation_drawer_open,
+                                R.string.navigation_drawer_close);
+                        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.colorText));
+                        // All that to re-synchronize the Drawer State
+                        toggle.syncState();
+                    }
+                });
+
+            }
         }
     }
 

@@ -97,8 +97,14 @@ public class NetworkUtils {
     }
 
     //for getting url ready for searching movie
-    public static URL buildUrlForSearch(String api_key, String query, long pageNumber) {
-        String searchUrl = "https://api.themoviedb.org/3/search/movie";
+    public static URL buildUrlForSearch(String api_key, String query, long pageNumber,String movieOrTvShow) {
+
+        String searchUrl;
+        if(movieOrTvShow.equals("movie")){
+            searchUrl  = "https://api.themoviedb.org/3/search/movie";
+        }else{
+            searchUrl = "https://api.themoviedb.org/3/search/tv";
+        }
 
         //normal search without filters - only parameter search
         Uri buildUri = Uri.parse(searchUrl).buildUpon()
