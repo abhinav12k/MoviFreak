@@ -1,5 +1,8 @@
 package com.apps.movifreak.Utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 
 
@@ -94,8 +97,14 @@ public class NetworkUtils {
     }
 
     //for getting url ready for searching movie
-    public static URL buildUrlForSearch(String api_key, String query, long pageNumber) {
-        String searchUrl = "https://api.themoviedb.org/3/search/movie";
+    public static URL buildUrlForSearch(String api_key, String query, long pageNumber,String movieOrTvShow) {
+
+        String searchUrl;
+        if(movieOrTvShow.equals("movie")){
+            searchUrl  = "https://api.themoviedb.org/3/search/movie";
+        }else{
+            searchUrl = "https://api.themoviedb.org/3/search/tv";
+        }
 
         //normal search without filters - only parameter search
         Uri buildUri = Uri.parse(searchUrl).buildUpon()
@@ -187,5 +196,26 @@ public class NetworkUtils {
         return imageUrl;
 
     }
+
+    //Check internet Connection
+    public static String getConnectivityStatusString(Context context) {
+        String status = null;
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                status = "Wifi enabled";
+                return status;
+            } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
+                status = "Mobile data enabled";
+                return status;
+            }
+        } else {
+            status = "No internet is available";
+            return status;
+        }
+        return status;
+    }
+
 }
 

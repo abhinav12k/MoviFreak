@@ -30,26 +30,84 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
-    private ArrayList<Movie> movieList = new ArrayList<>();
+    /**
+     * Type of Movie -> 1.pop
+     *                  2.top
+     *                  3.search
+     * */
+
+    private ArrayList<Movie> topMovieList = new ArrayList<>();
+    private ArrayList<Movie> popMovieList = new ArrayList<>();
+    private ArrayList<Movie> searchMovieList = new ArrayList<>();
+    private String typeOfMovie = "pop";
+
+    private ArrayList<Movie> listInUse;
     private Context mContext;
 
     public MovieAdapter(Context mContext) {
         this.mContext = mContext;
     }
 
-    public void addMovies(ArrayList<Movie> mList) {
-        this.movieList.addAll(mList);
+    public void addTopMovies(ArrayList<Movie> mList,String type) {
+        this.topMovieList.addAll(mList);
+        this.typeOfMovie = type;
         notifyDataSetChanged();
     }
 
-    public void clearList() {
-        this.movieList.clear();
+    public void updateTopMovieList(ArrayList<Movie> newList,String type) {
+        this.topMovieList.clear();
+        this.topMovieList = newList;
+        this.typeOfMovie = type;
         notifyDataSetChanged();
     }
 
-    public void updateMoviesList(ArrayList<Movie> newList) {
-        this.movieList.clear();
-        this.movieList = newList;
+    public void addPopMovies(ArrayList<Movie> popList,String type){
+        this.popMovieList.addAll(popList);
+        this.typeOfMovie = type;
+        notifyDataSetChanged();
+    }
+
+    public void updatePopMovieList(ArrayList<Movie> popList,String type){
+        this.popMovieList.clear();
+        this.popMovieList = popList;
+        this.typeOfMovie = type;
+        notifyDataSetChanged();
+    }
+
+    public void addSearchMovieList(ArrayList<Movie> searchMovieList,String type){
+        this.searchMovieList.addAll(searchMovieList);
+        this.typeOfMovie = type;
+        notifyDataSetChanged();
+    }
+
+    public void updateSearchMovieList(ArrayList<Movie> searchMovieList,String type){
+        this.searchMovieList.clear();
+        this.searchMovieList = searchMovieList;
+        this.typeOfMovie = type;
+        notifyDataSetChanged();
+    }
+
+    public void clearTopMovieList(){
+        this.topMovieList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void clearSearchMovieList(){
+        this.searchMovieList.clear();
+        this.listInUse.clear();
+        notifyDataSetChanged();
+    }
+
+    public void clearPopMovieList(){
+        this.popMovieList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void clearAllLists() {
+        this.topMovieList.clear();
+        this.popMovieList.clear();
+        this.searchMovieList.clear();
+        this.listInUse.clear();
         notifyDataSetChanged();
     }
 
@@ -64,7 +122,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull final MovieAdapter.ViewHolder holder, final int position) {
 
-        final String tileUrl = movieList.get(position).getPoster_path();
+        final String tileUrl = listInUse.get(position).getPoster_path();
 
         Picasso.with(mContext).load(tileUrl).networkPolicy(NetworkPolicy.OFFLINE).into(holder.movie_tile, new Callback() {
             @Override
@@ -91,18 +149,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             }
         });
 
-        final String movieRating = String.valueOf(movieList.get(position).getRating());
-        final String movieYear = movieList.get(position).getRelease_date().substring(0,4);
+        try {
+            final String movieRating = String.valueOf(listInUse.get(position).getRating());
+            final String movieYear = listInUse.get(position).getRelease_date().substring(0, 4);
 
-        holder.movie_rating.setText(movieRating);
-        holder.movie_year.setText(movieYear);
-
+            holder.movie_rating.setText(movieRating);
+            holder.movie_year.setText(movieYear);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         holder.movie_tile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Movie currentMovie = movieList.get(position);
+                Movie currentMovie = listInUse.get(position);
                 Intent DetailIntent = new Intent(mContext, DetailActivity.class);
                 Bundle b = new Bundle();
                 b.putParcelable("movie_details", currentMovie);
@@ -117,7 +178,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return movieList.size();
+        switch (typeOfMovie){
+            case "pop":
+                listInUse = popMovieList;
+                break;
+            case "top":
+                listInUse = topMovieList;
+                break;
+            case "search":
+                listInUse = searchMovieList;
+                break;
+        }
+        return listInUse.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -12,4 +12,6 @@
     <color name="colorLightGrey">#323130</color>
     <color name="colorRed">#c70039</color>
     <color name="colorLightPink">#FFF7F8</color>
+    <color name="backColor">#FFFFFF</color>
+    <color name="starEmpty">#FFF300</color>
 </resources>

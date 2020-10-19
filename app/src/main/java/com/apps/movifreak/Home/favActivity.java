@@ -5,6 +5,8 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,12 +32,20 @@ public class favActivity extends AppCompatActivity {
     private FavAdapter myAdapter;
     private AppDatabase mDb;
 
+    //layouts
+    private LinearLayout fav_list_layout;
+    private LinearLayout no_fav_layout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fav);
 
         mDb = AppDatabase.getInstance(getApplicationContext());
+
+        //setting up layouts
+        fav_list_layout = findViewById(R.id.fav_list);
+        no_fav_layout = findViewById(R.id.no_fav);
 
         //setting up toolbar
         Toolbar main_toolbar = findViewById(R.id.main_toolbar);
@@ -58,10 +68,10 @@ public class favActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(myAdapter);
 
         Intent incomingIntent = getIntent();
-        if(incomingIntent.hasExtra("from_fragment")){
-            Log.d(TAG,"from: "+incomingIntent.getStringExtra("from_fragment"));
+        if (incomingIntent.hasExtra("from_fragment")) {
+            Log.d(TAG, "from: " + incomingIntent.getStringExtra("from_fragment"));
 
-            if(incomingIntent.getStringExtra("from_fragment").equals("TvShowFragment")){
+            if (incomingIntent.getStringExtra("from_fragment").equals("TvShowFragment")) {
 
                 actionBar.setTitle("Favorite TvShows");
 
@@ -72,12 +82,21 @@ public class favActivity extends AppCompatActivity {
                 tvShowList.observe(this, new Observer<List<FavTvShow>>() {
                     @Override
                     public void onChanged(List<FavTvShow> favTvShows) {
-                        Log.d(TAG,"tvShowList: "+favTvShows);
-                        myAdapter.addTvShows(favTvShows,"tvShow");
+//                        Log.d(TAG,"tvShowList: "+favTvShows);
+
+                        if (favTvShows.size() == 0) {
+                            fav_list_layout.setVisibility(View.GONE);
+                            no_fav_layout.setVisibility(View.VISIBLE);
+                        } else {
+
+                            fav_list_layout.setVisibility(View.VISIBLE);
+                            no_fav_layout.setVisibility(View.GONE);
+                            myAdapter.addTvShows(favTvShows, "tvShow");
+                        }
                     }
                 });
 
-            }else if(incomingIntent.getStringExtra("from_fragment").equals("MovieFragment")){
+            } else if (incomingIntent.getStringExtra("from_fragment").equals("MovieFragment")) {
 
                 actionBar.setTitle("Favorite Movies");
 
@@ -87,8 +106,17 @@ public class favActivity extends AppCompatActivity {
                 movieList.observe(this, new Observer<List<FavMovie>>() {
                     @Override
                     public void onChanged(List<FavMovie> favMovies) {
-                        Log.d(TAG,"tvShowList: "+favMovies);
-                        myAdapter.addMovies(favMovies,"movie");
+//                        Log.d(TAG,"tvShowList: "+favMovies);
+
+                        if (favMovies.size() == 0) {
+                            fav_list_layout.setVisibility(View.GONE);
+                            no_fav_layout.setVisibility(View.VISIBLE);
+                        } else {
+
+                            fav_list_layout.setVisibility(View.VISIBLE);
+                            no_fav_layout.setVisibility(View.GONE);
+                            myAdapter.addMovies(favMovies, "movie");
+                        }
                     }
                 });
 

@@ -32,6 +32,16 @@ private val TAG = MovieFragment::class.java.simpleName
 
 class MovieFragment : Fragment() {
 
+    /**
+     * Type of Movie -> 1.pop
+     *                  2.top
+     *                  3.search
+     * */
+
+    private val popMovieConstant: String = "pop"
+    private val topMovieConstant: String = "top"
+    private val searchMovieConstant: String = "search"
+
     //vars
     private var activeId = 0
     private var returnActivity = ""
@@ -42,6 +52,7 @@ class MovieFragment : Fragment() {
     private var popCurrentPage = 1
     private var topCurrentPage = 1
     private var searchedMovie: String? = null
+    private var searchPageLimit: Int = 3
 
     //Movies List
     private val popMoviesList = ArrayList<Movie>()
@@ -62,14 +73,15 @@ class MovieFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         myAdapter = MovieAdapter(mContext)
-//        pageTitle.text = "Pop Movies"
-//        Log.d(TAG, "OnActivityCreated!!!!!!!!!!!!!!!!!!")
 
         if (savedInstanceState != null && savedInstanceState.containsKey("movies_list")) {
             Log.d(TAG, "Getting data from savedInstance")
             activeId = savedInstanceState.getInt("type_of_movie")
             bottomNavigationView.selectedItemId = activeId
             displayMovieList = savedInstanceState.getParcelableArrayList("movies_list")!!
+
+            //TODO add method in the adpater to use the savedInstanceMovieList
+
         } else {
             Log.d(TAG, "Fetching data onStart of app")
             //getting movies list asynchronously
@@ -86,10 +98,12 @@ class MovieFragment : Fragment() {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1)) {
                     if (isSearchActive) {
-                        searchPage++
-                        Log.d(TAG, "Search Page no: $searchPage")
-                        if (searchedMovie != null) {
-                            getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie?.trim(), searchPage.toLong()))
+                        if (searchPage < searchPageLimit) {
+                            searchPage++
+                            Log.d(TAG, "Search Page no: $searchPage")
+                            if (searchedMovie != null) {
+                                getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie?.trim(), searchPage.toLong(),"movie"))
+                            }
                         }
                     } else {
                         if (typeOfMovie == "popular") {
@@ -113,21 +127,25 @@ class MovieFragment : Fragment() {
 //                        pageTitle?.text = "Pop Movies"
                         typeOfMovie = "popular"
                         displayMovieList.clear()
+
                         if (popMoviesList.isEmpty() && popMoviesList.size == 0) {
                             popCurrentPage = 1
-                            myAdapter.clearList()
+                            myAdapter.clearPopMovieList()
                             getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", 1))
                         } else {
 
                             if (popMoviesList.size > 120) {
+
                                 Log.d(TAG, "PopMovieListSize - " + popMoviesList.size + " Excess data emptying list")
                                 popCurrentPage = 1
-                                myAdapter.clearList()
+                                myAdapter.clearPopMovieList()
                                 getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", 1))
+
                             } else {
 
                                 Log.d(TAG, "Getting movies from already fetched list")
-                                myAdapter.updateMoviesList(popMoviesList)
+                                myAdapter.updatePopMovieList(popMoviesList,popMovieConstant)
+
                             }
                         }
                     }
@@ -135,24 +153,31 @@ class MovieFragment : Fragment() {
                 }
                 R.id.top_rated -> {
                     if (typeOfMovie != "top_rated") {
+
 //                        pageTitle?.text = "Top Rated Movies"
                         typeOfMovie = "top_rated"
                         displayMovieList.clear()
+
                         if (topRatedMoviesList.isEmpty() && topRatedMoviesList.size == 0) {
+
                             topCurrentPage = 1
-                            myAdapter.clearList()
+                            myAdapter.clearTopMovieList()
                             getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", 1))
+
                         } else {
 
                             if (topRatedMoviesList.size > 120) {
+
                                 Log.d(TAG, "TopRatedListSize - " + topRatedMoviesList.size + " Excess data emptying list")
                                 topCurrentPage = 1
-                                myAdapter.clearList()
+                                myAdapter.clearTopMovieList()
                                 getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", 1))
+
                             } else {
 
                                 Log.d(TAG, "Getting movies from already fetched list")
-                                myAdapter.updateMoviesList(topRatedMoviesList)
+                                myAdapter.updateTopMovieList(topRatedMoviesList,topMovieConstant)
+
                             }
                         }
                     }
@@ -160,7 +185,7 @@ class MovieFragment : Fragment() {
                 }
                 R.id.fav_movies -> {
                     val favIntent = Intent(mContext, favActivity::class.java)
-                    favIntent.putExtra("from_fragment","MovieFragment")
+                    favIntent.putExtra("from_fragment", "MovieFragment")
                     startActivity(favIntent)
                     returnActivity = "favActivity"
                     true
@@ -207,17 +232,27 @@ class MovieFragment : Fragment() {
 
         override fun onPostExecute(movies: ArrayList<Movie?>?) {
             if (movies != null && movies.isNotEmpty()) {
+
                 if (typeOfMovie == "popular") {
+
                     popMoviesList.addAll(movies as Collection<Movie>)
                     displayMovieList.addAll(movies)
+                    myAdapter.addPopMovies(movies,popMovieConstant)
+
                 } else if (typeOfMovie == "top_rated") {
+
                     topRatedMoviesList.addAll(movies as Collection<Movie>)
                     displayMovieList.addAll(movies)
+                    myAdapter.addTopMovies(movies,topMovieConstant)
+
                 } else {
+
                     searchedMoviesList.addAll(movies as Collection<Movie>)
                     displayMovieList.addAll(movies)
+                    myAdapter.addSearchMovieList(movies,searchMovieConstant)
+
                 }
-                myAdapter.addMovies(movies)
+
             }
         }
 
@@ -226,22 +261,32 @@ class MovieFragment : Fragment() {
     fun removeSearchResultsAndRefresh() {
 
         isSearchActive = false
+        myAdapter.clearSearchMovieList()
         if (typeOfMovie == "popular") {
 
+            Log.d(TAG,"refresh after search")
+
             if (popMoviesList.isNotEmpty() && popMoviesList.size < 121) {
-                myAdapter.updateMoviesList(popMoviesList)
+
+                myAdapter.updatePopMovieList(popMoviesList,popMovieConstant)
+
             } else {
+
                 Log.d(TAG, "Page no:Pop $popCurrentPage")
                 getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", popCurrentPage.toLong()))
+
             }
         } else {
 
             if (topRatedMoviesList.isNotEmpty() && topRatedMoviesList.size < 121) {
-                myAdapter.updateMoviesList(topRatedMoviesList)
+
+                myAdapter.updateTopMovieList(topRatedMoviesList,topMovieConstant)
+
             } else {
 
                 Log.d(TAG, "Page no:Top $topCurrentPage")
                 getMoviesTask().execute(NetworkUtils.buildUrlForMovies(typeOfMovie, getString(R.string.api_key), "", topCurrentPage.toLong()))
+
             }
         }
 
@@ -266,10 +311,10 @@ class MovieFragment : Fragment() {
                     //Perform search operation from MoviesDb
                     isSearchActive = true
                     searchPage = 1
-                    myAdapter.clearList()
+                    myAdapter.clearAllLists()
                     Log.d(TAG, "Search Parameter: $s")
                     searchedMovie = s.toString().trim { it <= ' ' }
-                    getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie?.trim(), searchPage.toLong()))
+                    getMoviesTask().execute(NetworkUtils.buildUrlForSearch(getString(R.string.api_key), searchedMovie?.trim(), searchPage.toLong(),"movie"))
                 }
             }
         })
