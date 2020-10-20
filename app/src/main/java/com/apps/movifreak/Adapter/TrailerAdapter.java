@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.apps.movifreak.Home.YoutubePlayerActivity;
 import com.apps.movifreak.Model.Trailer;
 import com.apps.movifreak.R;
 import com.squareup.picasso.Callback;
@@ -51,7 +52,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-        String key = trailersList.get(position).getKey();
+        final String key = trailersList.get(position).getKey();
         final String youtubeLink = TRAILER_BASE_URL+key;
 
         String thumbnailLink = "https://img.youtube.com/vi/"+key+"/sddefault.jpg";
@@ -75,11 +76,15 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
         holder.trailerThumbnail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri youtubeUri = Uri.parse(youtubeLink);
-                Intent trailerIntent = new Intent(Intent.ACTION_VIEW,youtubeUri);
-                if(trailerIntent.resolveActivity(mContext.getPackageManager())!=null){
-                    mContext.startActivity(trailerIntent);
-                }
+//                Uri youtubeUri = Uri.parse(youtubeLink);
+//                Intent trailerIntent = new Intent(Intent.ACTION_VIEW,youtubeUri);
+//                if(trailerIntent.resolveActivity(mContext.getPackageManager())!=null){
+//                    mContext.startActivity(trailerIntent);
+//                }
+
+                Intent playerIntent = new Intent(mContext, YoutubePlayerActivity.class);
+                playerIntent.putExtra("key",key);
+                mContext.startActivity(playerIntent);
             }
         });
 
