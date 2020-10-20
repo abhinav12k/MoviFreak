@@ -33,7 +33,7 @@ A simple Android App which helps the user to discover movies and TvShows.It can 
 <img align="left"  src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/vid1.gif" width="250" height="460"  />
   <img src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/vid2.gif" width="250" height="460" />
  <img align="right"  src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/vid3.gif" width="250" height="460"  />
- <img align="left" src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/vid4.gif" width="250" height="460"  />
+ <img src="https://github.com/abhinav78910/MoviFreak/blob/master/screenshots/vid4.gif" width="250" height="460"  />
   </p>
   
 # Screenshots
