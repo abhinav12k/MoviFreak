@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app2="http://schema.android.com/apk/res/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,8 +9,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@color/colorPrimary"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_thumbnails"
@@ -19,16 +20,19 @@
             android:padding="2dp" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/bottom_navigation"
             style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="59dp"
             android:layout_alignParentBottom="true"
-            app:elevation="10dp"
-            app:itemRippleColor="@color/colorText"
-            app:itemIconTint="@color/colorText"
-            app:itemTextColor="@color/colorText"
-            app:menu="@menu/menu" />
+            android:padding="30dp"
+            app2:elevation="10dp"
+            app2:itemIconTint="@color/colorText"
+            app2:itemRippleColor="@color/colorText"
+            app2:itemTextColor="@color/colorText"
+            app2:menu="@menu/menu"
+            tools:ignore="RedundantNamespace" />
 
     </RelativeLayout>
 

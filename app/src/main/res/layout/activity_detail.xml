@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,7 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            android:theme="@style/SearchToolbar" />
+            android:theme="@style/SearchToolbar"/>
+
+
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -37,6 +40,30 @@
                     android:layout_width="match_parent"
                     android:layout_height="280dp"
                     android:background="@drawable/poster_background_gradient" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/poster"
+                        android:layout_width="140dp"
+                        android:layout_height="210dp"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginTop="180dp"
+                        android:elevation="5dp"
+                        android:scaleType="fitXY" />
+
+
+                    <View
+                        android:layout_width="140dp"
+                        android:layout_height="210dp"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginTop="180dp"
+                        android:background="@drawable/poster_background_gradient" />
+
+
+                </RelativeLayout>
 
             </RelativeLayout>
 
@@ -61,62 +88,41 @@
                 android:visibility="gone" />
 
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/poster"
-                android:layout_width="140dp"
-                android:layout_height="210dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="180dp"
-                android:elevation="5dp"
-                android:scaleType="fitXY" />
-
-
-            <View
-                android:layout_width="140dp"
-                android:layout_height="210dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="180dp"
-                android:background="@drawable/poster_background_gradient" />
-
-        </RelativeLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="290dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="290dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginRight="9dp"
                 android:orientation="vertical">
 
-<!--                <LinearLayout-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="horizontal">-->
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:orientation="horizontal">-->
 
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:fontFamily="@font/nunito_sans_bold"-->
-<!--                        android:text="Language :"-->
-<!--                        android:textColor="@color/colorLight"-->
-<!--                        android:textSize="18dp"-->
-<!--                        android:textStyle="bold" />-->
+                <!--                    <TextView-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:fontFamily="@font/nunito_sans_bold"-->
+                <!--                        android:text="Language :"-->
+                <!--                        android:textColor="@color/colorLight"-->
+                <!--                        android:textSize="18dp"-->
+                <!--                        android:textStyle="bold" />-->
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/movie_language"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:fontFamily="@font/inder"-->
-<!--                        android:padding="5dp"-->
-<!--                        android:text="en"-->
-<!--                        android:textColor="@color/colorLightGrey"-->
-<!--                        android:textSize="18dp" />-->
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/movie_language"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:fontFamily="@font/inder"-->
+                <!--                        android:padding="5dp"-->
+                <!--                        android:text="en"-->
+                <!--                        android:textColor="@color/colorLightGrey"-->
+                <!--                        android:textSize="18dp" />-->
 
-<!--                </LinearLayout>-->
+                <!--                </LinearLayout>-->
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -142,6 +148,7 @@
                         android:text="2020-5-6"
                         android:textColor="@color/colorLightGrey"
                         android:textSize="16dp" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -169,6 +176,7 @@
                         android:textColor="@color/colorLightGrey"
                         android:textSize="18dp" />
                 </LinearLayout>
+
             </LinearLayout>
 
         </RelativeLayout>
@@ -184,6 +192,18 @@
             android:textColor="@color/colorLight"
             android:textSize="30dp"
             android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/share_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginLeft="300dp"
+            android:layout_marginRight="10dp"
+            android:drawableEnd="@drawable/ic_baseline_share_24"
+            android:padding="5dp"
+            android:text="Share"
+            android:textColor="#000000"
+            android:backgroundTint="#FFF300"/>
 
         <TextView
             android:id="@+id/movie_synopsis"
@@ -210,10 +230,10 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/trailerList"
-            android:layout_width="match_parent"
+            android:layout_width="386dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp" />
 
         <TextView
             android:id="@+id/reviewHeading"

@@ -201,14 +201,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d(TAG, "menu options created");
-        getMenuInflater().inflate(R.menu.search_menu, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return super.onCreateOptionsMenu(menu);
+
+
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
+        int id = item.getItemId();
         if (item.getItemId() == R.id.search_icon) {
             //toggle hamburger icon with search bar
             showSearchBar();

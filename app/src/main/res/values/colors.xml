@@ -14,4 +14,5 @@
     <color name="colorLightPink">#FFF7F8</color>
     <color name="backColor">#FFFFFF</color>
     <color name="starEmpty">#FFF300</color>
+    <color name="share_btn">#FFF300</color>
 </resources>
