@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/91c9c25c5c9e46f0819be6b5fb972332)](https://app.codacy.com/gh/abhinav78910/MoviFreak?utm_source=github.com&utm_medium=referral&utm_content=abhinav78910/MoviFreak&utm_campaign=Badge_Grade)
 [![GitHub license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/abhinav78910/MoviFreak/blob/master/LICENSE)
 ![GitHub followers](https://img.shields.io/github/followers/abhinav78910?style=social)
 ![GitHub Repo stars](https://img.shields.io/github/stars/abhinav78910/MoviFreak?style=social)
