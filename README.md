@@ -25,9 +25,6 @@ It's a movie app that is used to view reviews and trailers of latest and top rat
 # Want to contribute?
 * See the [Contributer's Guide](https://github.com/abhinav78910/MoviFreak/blob/master/Contributing.md)
 
-# Get in Touch
-You can contact me on [Telegram](https://t.me/joinchat/KjgkxBpGfK-zgPsgBG4Mlg)
-
 # License
 This project is under [MIT License](https://github.com/abhinav78910/MoviFreak/blob/master/LICENSE) 
 
