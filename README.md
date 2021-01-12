@@ -50,9 +50,6 @@ A simple Android App which helps the user to discover movies and TvShows.It can 
 # Want to contribute?
 * See the [Contributer's Guide](https://github.com/abhinav78910/MoviFreak/blob/master/Contributing.md)
 
-# Get in Touch
-You can contact me on [Telegram](https://t.me/joinchat/KjgkxBpGfK-zgPsgBG4Mlg)
-
 ## Found this project useful? 
 If you found this project useful, then please consider giving it a :star: on Github and sharing it with your friends via social media.
 
