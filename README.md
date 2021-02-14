@@ -1,8 +1,8 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/91c9c25c5c9e46f0819be6b5fb972332)](https://app.codacy.com/gh/abhinav78910/MoviFreak?utm_source=github.com&utm_medium=referral&utm_content=abhinav78910/MoviFreak&utm_campaign=Badge_Grade)
-[![GitHub license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/abhinav78910/MoviFreak/blob/master/LICENSE)
-![GitHub followers](https://img.shields.io/github/followers/abhinav78910?style=social)
-![GitHub Repo stars](https://img.shields.io/github/stars/abhinav78910/MoviFreak?style=social)
-![GitHub forks](https://img.shields.io/github/forks/abhinav78910/MoviFreak?style=social)
+[![GitHub license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/abhinav12k/MoviFreak/blob/master/LICENSE)
+![GitHub followers](https://img.shields.io/github/followers/abhinav12k?style=social)
+![GitHub Repo stars](https://img.shields.io/github/stars/abhinav12k/MoviFreak?style=social)
+![GitHub forks](https://img.shields.io/github/forks/abhinav12k/MoviFreak?style=social)
 
 # MoviFreak
 A simple Android App which helps the user to discover movies and TvShows.It can be used to view reviews and trailers of latest and top rated movies or TvShows. It's a home for a movie/TvShow lover. Get everything you need to know about a movie/TvShow.
