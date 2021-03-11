@@ -17,7 +17,7 @@ A simple Android App which helps the user to discover movies and TvShows.It can 
 * No need to leave the app to view Trailers and teasers(InApp Video Play)
 * Save Movies or TvShows for offline Support
 
-## Test it on your device! [Download apk](https://github.com/abhinav78910/MoviFreak/raw/master/app/release/app-release.apk)
+<a href='https://play.google.com/store/apps/details?id=com.apps.movifreak&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
 
 ## Built With 🛠
 - [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.
